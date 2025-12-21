@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "Admin Area"
+AuthUserFile "/Users/ben/Code Projects/Personal/gangi-strutters-events/server/.htpasswd"
+Require valid-user

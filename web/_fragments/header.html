@@ -1,0 +1,68 @@
+<header class="text-white shadow-sm border-b border-blue-900/30" style="background:linear-gradient(90deg,#0b5cff,#0849c6); font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <div class="w-full px-4 sm:px-8 lg:px-12 py-6 flex items-center justify-between" style="min-height:80px;">
+        <!-- Logo / Title -->
+        <div class="flex items-center gap-3">
+            <div style="height:44px; width:44px; display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:10px; background:rgba(255,255,255,0.12); flex:0 0 auto;">
+                <img
+                    src="/assets/gkp-logo.png"
+                    alt="Gangi Kupras Productions logo"
+                    style="max-height:40px; max-width:40px; height:auto; width:auto; object-fit:contain; display:block;"
+                />
+            </div>
+            <h1 class="text-xl sm:text-2xl font-semibold tracking-tight">
+                GKP Events
+            </h1>
+        </div>
+
+        <!-- Desktop nav -->
+        <nav class="hidden sm:flex gap-3 text-base sm:text-lg font-medium">
+            <a href="/" class="px-3 py-2 rounded-md hover:bg-white/15 transition">Home</a>
+            <a href="/admin/" class="px-3 py-2 rounded-md hover:bg-white/15 transition">Admin</a>
+        </nav>
+
+        <!-- Mobile menu button -->
+        <button id="mobileNavToggle" class="sm:hidden p-2 rounded-md hover:bg-white/15 transition"
+            aria-label="Toggle navigation menu" aria-expanded="false" type="button">
+            <!-- simple inline icons (no deps) -->
+            <span id="iconMenu" aria-hidden="true">☰</span>
+            <span id="iconClose" aria-hidden="true" class="hidden">✕</span>
+        </button>
+    </div>
+
+    <!-- Mobile dropdown -->
+    <nav id="mobileNav" class="hidden sm:hidden border-t border-white/20 px-4 sm:px-6 py-4 space-y-3 text-base" style="background:rgba(11,92,255,0.92);">
+        <a href="/" class="block hover:text-gray-200">Home</a>
+        <a href="/admin/" class="block hover:text-gray-200">Admin</a>
+    </nav>
+    <script>
+      (function () {
+        const btn = document.getElementById('mobileNavToggle');
+        const nav = document.getElementById('mobileNav');
+        const iconMenu = document.getElementById('iconMenu');
+        const iconClose = document.getElementById('iconClose');
+
+        // If the fragment is injected multiple times, avoid double-binding.
+        if (!btn || !nav || btn.dataset.bound === '1') return;
+        btn.dataset.bound = '1';
+
+        function setOpen(open) {
+          nav.classList.toggle('hidden', !open);
+          if (iconMenu) iconMenu.classList.toggle('hidden', open);
+          if (iconClose) iconClose.classList.toggle('hidden', !open);
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+
+        btn.addEventListener('click', function () {
+          const open = nav.classList.contains('hidden');
+          setOpen(open);
+        });
+
+        // Close menu when a link is clicked
+        nav.addEventListener('click', function (e) {
+          const a = e.target && e.target.closest && e.target.closest('a');
+          if (a) setOpen(false);
+        });
+      })();
+    </script>
+</header>

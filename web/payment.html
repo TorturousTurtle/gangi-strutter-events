@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Review & Pay</title>
+    <link rel="stylesheet" href="./assets/css/app.css" />
+</head>
+
+<body class="bg-white text-gray-900 min-h-screen flex flex-col">
+    <div id="site-header"></div>
+
+    <main class="flex-1 w-full px-4 py-6 sm:py-10">
+        <div class="mx-auto w-full max-w-6xl">
+            <div class="flex items-start sm:items-center justify-center px-4 py-4 sm:py-6">
+                <div class="w-full max-w-2xl rounded-xl bg-white p-4 sm:p-8 shadow-2xl border border-gray-300">
+                    <h1 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+                        Review & Pay
+                    </h1>
+
+                    <p class="text-xs sm:text-sm text-gray-700 mb-6">
+                        Review your registration details below. When you’re ready, click the button to continue to
+                        Stripe Checkout for secure payment.
+                    </p>
+
+                    <div id="payment-error" class="hidden mb-4 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-800"></div>
+
+                    <div class="rounded-lg border border-gray-200 p-4 mb-5">
+                        <div class="flex items-center justify-between gap-4 mb-3">
+                            <div class="text-sm font-semibold text-gray-900">Registration summary</div>
+                            <div id="payment-status" class="text-xs text-gray-600"></div>
+                        </div>
+
+                        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
+                            <div>
+                                <dt class="text-gray-600">Twirler</dt>
+                                <dd id="sum-name" class="font-semibold text-gray-900">—</dd>
+                            </div>
+                            <div>
+                                <dt class="text-gray-600">Email</dt>
+                                <dd id="sum-email" class="font-semibold text-gray-900 break-words">—</dd>
+                            </div>
+                            <div>
+                                <dt class="text-gray-600">Team</dt>
+                                <dd id="sum-team" class="font-semibold text-gray-900">—</dd>
+                            </div>
+                            <div>
+                                <dt class="text-gray-600">Age division</dt>
+                                <dd id="sum-age" class="font-semibold text-gray-900">—</dd>
+                            </div>
+                        </dl>
+
+                        <div class="mt-4">
+                            <div class="text-gray-600 text-xs mb-2">Events</div>
+                            <ul id="sum-events" class="text-sm text-gray-900 list-disc pl-5 space-y-1"></ul>
+                            <div id="sum-events-empty" class="text-sm text-gray-700 italic hidden">No events found.</div>
+                        </div>
+
+                        <div class="mt-5 border-t border-gray-200 pt-4">
+                            <div class="flex items-center justify-between text-sm">
+                                <div class="text-gray-700">Event subtotal</div>
+                                <div id="sum-subtotal" class="font-semibold text-gray-900">—</div>
+                            </div>
+                            <div class="flex items-center justify-between text-sm mt-1">
+                                <div class="text-gray-700">Facility fee</div>
+                                <div id="sum-fee" class="font-semibold text-gray-900">—</div>
+                            </div>
+                            <div class="flex items-center justify-between text-base mt-3">
+                                <div class="font-bold text-gray-900">Total</div>
+                                <div id="sum-total" class="font-extrabold text-gray-900">—</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <a href="./index.html"
+                            class="w-full sm:w-auto rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-center text-sm font-semibold text-gray-900 hover:bg-gray-50">
+                            Back
+                        </a>
+
+                        <button id="btn-checkout" type="button"
+                            class="w-full flex-1 rounded-lg bg-violet-600 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-violet-700 disabled:opacity-60 disabled:cursor-not-allowed">
+                            Proceed to secure payment
+                        </button>
+                    </div>
+
+                    <p class="mt-4 text-xs text-gray-600">
+                        By continuing, you’ll be redirected to Stripe Checkout. After payment, you’ll be sent back here
+                        and then forwarded to the Thank You page.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script src="./assets/js/layout.js"></script>
+    <script src="./assets/js/header.js"></script>
+    <script>
+        // Payment page wiring (Stripe Checkout redirect)
+        // NOTE: This page only prepares a summary and calls a backend endpoint that creates the Checkout Session.
+        // The PHP endpoint will be implemented separately.
+
+        const $ = (id) => document.getElementById(id);
+
+        function money(n) {
+            const num = Number(n);
+            if (!Number.isFinite(num)) return '—';
+            return `$${num.toFixed(2)}`;
+        }
+
+        function setText(id, value) {
+            const el = $(id);
+            if (!el) return;
+            el.textContent = (value === null || value === undefined || String(value).trim() === '') ? '—' : String(value);
+        }
+
+        function safeJsonParse(s) {
+            try { return JSON.parse(s); } catch { return null; }
+        }
+
+        function loadRegistrationDraft() {
+            // We don't know your exact storage key yet, so try several likely ones.
+            const keys = [
+                'registration',
+                'registrationDraft',
+                'registration_draft',
+                'last_registration',
+                'baton_registration'
+            ];
+            for (const k of keys) {
+                const raw = localStorage.getItem(k);
+                if (!raw) continue;
+                const parsed = safeJsonParse(raw);
+                if (parsed && typeof parsed === 'object') return parsed;
+            }
+            return null;
+        }
+
+        function normalizeEvents(reg) {
+            // Accept a few shapes:
+            // - reg.eventSelections (array of strings)
+            // - reg.event_selections_json (already array or JSON string)
+            // - reg.event_selections (array)
+            const v = reg?.eventSelections ?? reg?.event_selections ?? reg?.event_selections_json;
+            if (!v) return [];
+            if (Array.isArray(v)) return v.map(String).filter(Boolean);
+            if (typeof v === 'string') {
+                const parsed = safeJsonParse(v);
+                if (Array.isArray(parsed)) return parsed.map((x) => (typeof x === 'string' ? x : (x?.name || ''))).filter(Boolean);
+                return v.split('|').map((s) => s.trim()).filter(Boolean);
+            }
+            return [];
+        }
+
+        function populateSummary(reg) {
+            const first = reg?.first_name ?? reg?.firstName ?? '';
+            const last = reg?.last_name ?? reg?.lastName ?? '';
+            const name = `${String(first).trim()} ${String(last).trim()}`.trim();
+
+            setText('sum-name', name);
+            setText('sum-email', reg?.email);
+            setText('sum-team', reg?.team_name ?? reg?.teamName);
+            setText('sum-age', reg?.age_division ?? reg?.ageDivision);
+
+            // Events
+            const events = normalizeEvents(reg);
+            const list = $('sum-events');
+            const empty = $('sum-events-empty');
+            if (list) list.innerHTML = '';
+
+            if (!events.length) {
+                if (empty) empty.classList.remove('hidden');
+            } else {
+                if (empty) empty.classList.add('hidden');
+                events.forEach((e) => {
+                    const li = document.createElement('li');
+                    li.textContent = e;
+                    list.appendChild(li);
+                });
+            }
+
+            // Totals
+            const subtotal = reg?.event_subtotal ?? reg?.eventSubtotal ?? reg?.subtotal;
+            const fee = reg?.facility_fee ?? reg?.facilityFee ?? 0;
+            const total = reg?.event_total ?? reg?.eventTotal ?? reg?.total;
+
+            setText('sum-subtotal', money(subtotal));
+            setText('sum-fee', money(fee));
+            setText('sum-total', money(total));
+        }
+
+        function showError(msg) {
+            const el = $('payment-error');
+            if (!el) return;
+            el.textContent = msg;
+            el.classList.remove('hidden');
+        }
+
+        function clearError() {
+            const el = $('payment-error');
+            if (!el) return;
+            el.textContent = '';
+            el.classList.add('hidden');
+        }
+
+        async function startCheckout(reg) {
+            clearError();
+
+            // TODO: implement this PHP endpoint.
+            // It should create a Stripe Checkout Session and return JSON: { ok: true, url: "https://checkout.stripe.com/..." }
+            const CREATE_SESSION_URL = './api/stripe/create-checkout-session.php';
+
+            const btn = $('btn-checkout');
+            const status = $('payment-status');
+
+            btn.disabled = true;
+            if (status) status.textContent = 'Creating secure checkout…';
+
+            try {
+                const res = await fetch(CREATE_SESSION_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        // Pass through what we have; server should validate and compute amounts.
+                        registration: reg,
+                        successUrl: `${location.origin}${location.pathname.replace(/payment\.html$/, 'thank-you.html')}?paid=1`,
+                        cancelUrl: location.href
+                    })
+                });
+
+                const data = await res.json().catch(() => null);
+                if (!res.ok || !data) {
+                    throw new Error(data?.error || `Checkout session failed (${res.status})`);
+                }
+
+                if (!data.url) {
+                    throw new Error('Missing Stripe Checkout URL from server.');
+                }
+
+                // Redirect to Stripe Checkout
+                location.href = data.url;
+            } catch (e) {
+                console.error(e);
+                showError(e?.message || 'Failed to start checkout.');
+                btn.disabled = false;
+                if (status) status.textContent = '';
+            }
+        }
+
+        (function initPaymentPage() {
+            const reg = loadRegistrationDraft();
+            if (!reg) {
+                populateSummary({});
+                showError('No registration data found. Please go back and complete registration first.');
+                const btn = $('btn-checkout');
+                if (btn) btn.disabled = true;
+                return;
+            }
+
+            populateSummary(reg);
+
+            const btn = $('btn-checkout');
+            if (btn) {
+                btn.addEventListener('click', () => startCheckout(reg));
+            }
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gangi Bay State Strutters Events</title>
+    <link rel="stylesheet" href="./assets/css/app.css" />
+    <link rel="stylesheet" href="./assets/css/custom.css" />
+</head>
+
+<body class="bg-white text-gray-900 min-h-screen flex flex-col">
+    <div id="site-header"></div>
+
+    <main class="flex-1 w-full px-4 py-6 sm:py-10">
+        <div class="mx-auto w-full max-w-6xl">
+            <div class="space-y-6 sm:space-y-8">
+
+                <section>
+                    <img
+                        src="./assets/reg-image.jpg"
+                        alt="Baton competition registration"
+                        class="w-full max-h-[420px] object-cover rounded-lg"
+                    />
+                </section>
+
+                <section>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">
+                        Upcoming Events
+                    </h2>
+                </section>
+
+                <!-- Flat, clean section (no “card” look) -->
+                <section class="border-t border-gray-200 -mt-8 pt-3">
+                    <div class="space-y-4">
+                        <div>
+                            <h3 id="eventName" class="text-lg sm:text-xl font-semibold text-gray-900 mt-8">
+                                Loading…
+                            </h3>
+                            <p id="eventDescription" class="mt-2 text-sm sm:text-base text-gray-700"></p>
+                        </div>
+
+                        <dl class="grid gap-3 text-sm sm:text-base">
+                            <div class="grid grid-cols-[90px,1fr] gap-2">
+                                <dt class="font-medium text-gray-600">Location</dt>
+                                <dd id="eventLocation" class="text-gray-900"></dd>
+                            </div>
+                            <div class="grid grid-cols-[90px,1fr] gap-2">
+                                <dt class="font-medium text-gray-600">Date</dt>
+                                <dd id="eventDates" class="text-gray-900"></dd>
+                            </div>
+                            <div class="text-gray-900">
+                                <span class="font-medium text-gray-600">Registration deadline:</span>
+                                <span id="eventDeadline"></span>
+                            </div>
+                        </dl>
+
+                        <div class="pt-2">
+                            <a href="./register.html"
+                                class="inline-flex w-full sm:w-auto items-center justify-center rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-violet-700">
+                                Register now
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script src="./assets/js/layout.js"></script>
+    <script src="./assets/js/header.js"></script>
+    <script type="module" src="./assets/js/home.js"></script>
+</body>
+
+</html>

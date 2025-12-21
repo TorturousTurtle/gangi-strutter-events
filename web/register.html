@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Event Registration</title>
+    <link rel="stylesheet" href="./assets/css/app.css" />
+    <link rel="stylesheet" href="./assets/css/custom.css" />
+</head>
+
+<body class="bg-white text-gray-900 min-h-screen flex flex-col">
+    <div id="site-header"></div>
+
+    <main class="flex-1 w-full px-4 py-6 sm:py-10">
+        <div class="mx-auto w-full max-w-6xl">
+
+            <div class="space-y-4">
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-900">
+                    Event Registration
+                </h1>
+
+                <form id="registrationForm" class="space-y-6">
+
+                    <!-- Form container -->
+                    <div class="admin-card span-12" style="margin-top:0;">
+                      <h2 class="text-lg font-semibold text-gray-900">Registrant details</h2>
+
+                      <div style="display:grid; gap:1rem; grid-template-columns: repeat(12, 1fr); margin-top:1rem;">
+
+                        <!-- First / Last -->
+                        <div style="grid-column: span 6;">
+                          <label class="block font-medium text-gray-800" for="firstName">First name</label>
+                          <input id="firstName" name="firstName" required class="form-control" />
+                        </div>
+
+                        <div style="grid-column: span 6;">
+                          <label class="block font-medium text-gray-800" for="lastName">Last name</label>
+                          <input id="lastName" name="lastName" required class="form-control" />
+                        </div>
+
+                        <!-- DOB / Gender / Age division -->
+                        <div style="grid-column: span 4;">
+                          <label class="block font-medium text-gray-800" for="dateOfBirth">Date of birth</label>
+                          <input id="dateOfBirth" name="dateOfBirth" type="date" required class="form-control" />
+                        </div>
+
+                        <div style="grid-column: span 4;">
+                          <label class="block font-medium text-gray-800" for="gender">Gender</label>
+                          <select id="gender" name="gender" required class="form-control">
+                            <option value="" disabled selected>Select…</option>
+                            <option>Female</option>
+                            <option>Male</option>
+                            <option>Non-binary</option>
+                            <option>Prefer not to say</option>
+                            <option>Other</option>
+                          </select>
+                        </div>
+
+                        <div style="grid-column: span 4;">
+                          <label class="block font-medium text-gray-800" for="ageDivision">Age division</label>
+                          <select id="ageDivision" name="ageDivision" class="form-control">
+                            <option value="" selected>Select…</option>
+                            <option value="0-6">0–6</option>
+                            <option value="7-9">7–9</option>
+                            <option value="10-12">10–12</option>
+                            <option value="13-15">13–15</option>
+                            <option value="16+">16+</option>
+                          </select>
+                        </div>
+
+                        <!-- Coach -->
+                        <div style="grid-column: span 12;">
+                          <label class="block font-medium text-gray-800" for="coachName">Coach name</label>
+                          <input id="coachName" name="coachName" class="form-control" placeholder="Coach or instructor name" />
+                        </div>
+
+                        <!-- Team -->
+                        <div style="grid-column: span 12;">
+                          <label class="block font-medium text-gray-800" for="teamName">Team</label>
+                          <input id="teamName" name="teamName" class="form-control" placeholder="Team / studio / school" />
+                        </div>
+
+                        <!-- Contact -->
+                        <div style="grid-column: span 6;">
+                          <label class="block font-medium text-gray-800" for="homePhone">Home phone number</label>
+                          <input id="homePhone" name="homePhone" class="form-control" />
+                        </div>
+
+                        <div style="grid-column: span 6;">
+                          <label class="block font-medium text-gray-800" for="email">Email address</label>
+                          <input id="email" name="email" type="email" required class="form-control" />
+                        </div>
+
+                      </div>
+
+                      <!-- Event Options mount (rendered by register.js) -->
+                      <div id="eventOptionsMount" style="margin-top:1rem;"></div>
+
+                      <!-- Error output for register.js -->
+                      <p id="formError" class="hidden text-xs text-red-600" style="margin-top:0.75rem;"></p>
+
+                      <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-top:1rem;">
+                        <p class="text-xs text-gray-600">Payment will be completed on the next step once a provider is added.</p>
+
+                        <button type="submit" class="btn btn-primary">
+                          Proceed to payment
+                        </button>
+                      </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script src="./assets/js/layout.js"></script>
+    <script src="./assets/js/header.js"></script>
+    <script type="module" src="./assets/js/register.js"></script>
+</body>
+
+</html>

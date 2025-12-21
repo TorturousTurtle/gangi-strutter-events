@@ -1,0 +1,195 @@
+/* web/assets/css/custom.css */
+
+/* ---------- Admin tabs ---------- */
+.admin-tabs {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    margin-top: 1rem;
+}
+
+.admin-tab {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+}
+
+.admin-tab:hover {
+    color: #111827;
+}
+
+.admin-tab[aria-selected="true"] {
+    color: #111827;
+    border-bottom-color: #0765ff;
+    /* violet */
+}
+
+.admin-panel {
+    display: none;
+    padding-top: 1.25rem;
+}
+
+.admin-panel.is-active {
+    display: block;
+}
+
+/* ---------- “Cards” (lightweight, not the old big card look) ---------- */
+.admin-cards {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1rem;
+}
+
+.admin-card {
+    grid-column: span 12;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    padding: 1rem;
+    box-shadow: 0 10px 25px -15px rgba(0, 0, 0, 0.25);
+}
+
+@media (min-width: 900px) {
+    .admin-card.span-4 {
+        grid-column: span 4;
+    }
+
+    .admin-card.span-8 {
+        grid-column: span 8;
+    }
+
+    .admin-card.span-12 {
+        grid-column: span 12;
+    }
+}
+
+.admin-card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.35rem;
+}
+
+.admin-metric {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.admin-metric .value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #111827;
+}
+
+.admin-metric .sub {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* ---------- Form controls (fix “no padding / text glued to edge”) ---------- */
+.form-control,
+.form-select,
+.form-textarea {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 0.6rem;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.25rem;
+    color: #111827;
+}
+
+.form-textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #0765ff;
+    box-shadow: 0 0 0 3px rgba(7, 101, 255, 0.18);
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.6rem;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    user-select: none;
+}
+
+.btn-primary {
+    background: #0765ff;
+    color: #fff;
+}
+
+
+.btn-primary:hover {
+    background: #e9c001;
+    color: #111827;
+}
+
+/* ---------- Tailwind violet compatibility (Home page Register button) ----------
+   If a button/link is still using Tailwind's bg-violet utilities, map them to the brand palette.
+   Keep this small; long-term, prefer using .btn.btn-primary in the markup. */
+.bg-violet-600,
+.bg-violet-700,
+.bg-violet-800 {
+    background-color: #0765ff !important;
+}
+
+.hover\:bg-violet-600:hover,
+.hover\:bg-violet-700:hover,
+.hover\:bg-violet-800:hover {
+    background-color: #e9c001 !important;
+    color: #111827 !important;
+}
+
+.btn-outline {
+    background: #fff;
+    border-color: #d1d5db;
+    color: #111827;
+}
+
+.btn-outline:hover {
+    background: #f3f4f6;
+}
+
+.btn-danger {
+    background: #fff;
+    border-color: #fca5a5;
+    color: #b91c1c;
+}
+
+.btn-danger:hover {
+    background: #fef2f2;
+}
+
+/* ---------- Small helpers ---------- */
+.hr {
+    border: 0;
+    border-top: 1px solid #e5e7eb;
+    margin: 1rem 0;
+}
+
+.muted {
+    color: #6b7280;
+}
