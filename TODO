@@ -1,9 +1,4 @@
-1. Add a tab for adjusting registrant information with additional fields like family
-2. Add liability/waiver forms
-3. Change facility fee name and add option to not pay it
-4. Add transaction fees once provider is chosen
-5. Add ability to add coaches and coach codes (hidden) but also remove them from judges sheets
-6. Add ability to remove coach code altogether
-7. Remove team column from judge sheets
-8. Add t-shirt option for registration
-9. Figure out how to split certain events into 3 part events
+1. Add liability/waiver forms
+2. Wire in payment processor
+3. Verify how comprehensive unit test coverage is
+4. Fix Event Popularity widget. Doesn't look visually appealing

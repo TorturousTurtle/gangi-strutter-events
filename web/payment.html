@@ -5,90 +5,548 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Review & Pay</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <!-- Styles -->
     <link rel="stylesheet" href="./assets/css/app.css" />
+    <link rel="stylesheet" href="./assets/css/design-tokens.css" />
+    <link rel="stylesheet" href="./assets/css/theme.css" />
+    <link rel="stylesheet" href="./assets/css/components.css" />
+    <link rel="stylesheet" href="./assets/css/custom.css" />
+    <!-- Branding (loads dynamic theme from admin settings) -->
+    <script src="./assets/js/branding-loader.js"></script>
+    <style>
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--brand-primary, #6366f1) 0%, var(--brand-primary-hover, #4f46e5) 100%);
+            color: white;
+            padding: var(--space-8, 2rem) var(--space-4, 1rem);
+        }
+
+        @media (min-width: 640px) {
+            .page-header {
+                padding: var(--space-10, 2.5rem) var(--space-6, 1.5rem);
+            }
+        }
+
+        .page-header-inner {
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .page-header-title {
+            font-size: var(--text-2xl, 1.5rem);
+            font-weight: var(--font-bold, 700);
+            letter-spacing: -0.01em;
+            margin-bottom: var(--space-2, 0.5rem);
+        }
+
+        @media (min-width: 640px) {
+            .page-header-title {
+                font-size: var(--text-3xl, 1.875rem);
+            }
+        }
+
+        .page-header-subtitle {
+            font-size: var(--text-sm, 0.875rem);
+            opacity: 0.9;
+        }
+
+        @media (min-width: 640px) {
+            .page-header-subtitle {
+                font-size: var(--text-base, 1rem);
+            }
+        }
+
+        /* Page Content */
+        .page-content {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: var(--space-6, 1.5rem) var(--space-4, 1rem);
+        }
+
+        @media (min-width: 640px) {
+            .page-content {
+                padding: var(--space-8, 2rem) var(--space-6, 1.5rem);
+            }
+        }
+
+        /* Payment Card */
+        .payment-card {
+            background: white;
+            border: 1px solid var(--neutral-200, #e4e4e7);
+            border-radius: var(--radius-xl, 16px);
+            overflow: hidden;
+            margin-bottom: var(--space-4, 1rem);
+        }
+
+        .payment-card-header {
+            padding: var(--space-4, 1rem) var(--space-5, 1.25rem);
+            border-bottom: 1px solid var(--neutral-100, #f4f4f5);
+            background: var(--neutral-50, #fafafa);
+        }
+
+        @media (min-width: 640px) {
+            .payment-card-header {
+                padding: var(--space-5, 1.25rem) var(--space-6, 1.5rem);
+            }
+        }
+
+        .payment-card-title {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2, 0.5rem);
+            font-size: var(--text-base, 1rem);
+            font-weight: var(--font-semibold, 600);
+            color: var(--neutral-900, #18181b);
+        }
+
+        .payment-card-title svg {
+            width: 20px;
+            height: 20px;
+            color: var(--brand-primary, #6366f1);
+        }
+
+        .payment-card-description {
+            font-size: var(--text-sm, 0.875rem);
+            color: var(--neutral-500, #71717a);
+            margin-top: var(--space-1, 0.25rem);
+        }
+
+        .payment-card-body {
+            padding: var(--space-5, 1.25rem);
+        }
+
+        @media (min-width: 640px) {
+            .payment-card-body {
+                padding: var(--space-6, 1.5rem);
+            }
+        }
+
+        /* Instructions */
+        .payment-instructions {
+            font-size: var(--text-sm, 0.875rem);
+            color: var(--neutral-600, #52525b);
+            line-height: 1.6;
+            margin-bottom: var(--space-5, 1.25rem);
+        }
+
+        /* Error Box */
+        .payment-error {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2, 0.5rem);
+            padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+            background: var(--color-error-light, #fee2e2);
+            border: 1px solid var(--color-error, #dc2626);
+            border-radius: var(--radius-lg, 12px);
+            font-size: var(--text-sm, 0.875rem);
+            color: var(--color-error-dark, #991b1b);
+            margin-bottom: var(--space-4, 1rem);
+        }
+
+        .payment-error svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        /* Summary Box */
+        .summary-box {
+            background: var(--neutral-50, #fafafa);
+            border: 1px solid var(--neutral-200, #e4e4e7);
+            border-radius: var(--radius-lg, 12px);
+            padding: var(--space-4, 1rem);
+            margin-bottom: var(--space-5, 1.25rem);
+        }
+
+        @media (min-width: 640px) {
+            .summary-box {
+                padding: var(--space-5, 1.25rem);
+            }
+        }
+
+        .summary-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-4, 1rem);
+            margin-bottom: var(--space-4, 1rem);
+        }
+
+        .summary-title {
+            font-size: var(--text-sm, 0.875rem);
+            font-weight: var(--font-semibold, 600);
+            color: var(--neutral-900, #18181b);
+        }
+
+        .summary-status {
+            font-size: var(--text-xs, 0.75rem);
+            color: var(--neutral-500, #71717a);
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-3, 0.75rem) var(--space-6, 1.5rem);
+        }
+
+        @media (min-width: 480px) {
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .info-item-label {
+            font-size: var(--text-xs, 0.75rem);
+            color: var(--neutral-500, #71717a);
+            margin-bottom: 2px;
+        }
+
+        .info-item-value {
+            font-size: var(--text-sm, 0.875rem);
+            font-weight: var(--font-semibold, 600);
+            color: var(--neutral-900, #18181b);
+            word-break: break-word;
+        }
+
+        /* Events Section */
+        .events-section {
+            margin-top: var(--space-4, 1rem);
+            padding-top: var(--space-4, 1rem);
+            border-top: 1px solid var(--neutral-200, #e4e4e7);
+        }
+
+        .events-label {
+            font-size: var(--text-xs, 0.75rem);
+            color: var(--neutral-500, #71717a);
+            margin-bottom: var(--space-2, 0.5rem);
+        }
+
+        .events-list {
+            font-size: var(--text-sm, 0.875rem);
+            color: var(--neutral-900, #18181b);
+            list-style: disc;
+            padding-left: var(--space-5, 1.25rem);
+        }
+
+        .events-list li {
+            padding: 2px 0;
+        }
+
+        .events-empty {
+            font-size: var(--text-sm, 0.875rem);
+            color: var(--neutral-500, #71717a);
+            font-style: italic;
+        }
+
+        /* Totals Section */
+        .totals-section {
+            margin-top: var(--space-5, 1.25rem);
+            padding-top: var(--space-4, 1rem);
+            border-top: 1px solid var(--neutral-200, #e4e4e7);
+        }
+
+        .total-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: var(--space-2, 0.5rem) 0;
+            font-size: var(--text-sm, 0.875rem);
+        }
+
+        .total-row-label {
+            color: var(--neutral-600, #52525b);
+        }
+
+        .total-row-value {
+            font-weight: var(--font-semibold, 600);
+            color: var(--neutral-900, #18181b);
+        }
+
+        .total-row-grand {
+            margin-top: var(--space-2, 0.5rem);
+            padding-top: var(--space-3, 0.75rem);
+            border-top: 1px solid var(--neutral-300, #d4d4d8);
+        }
+
+        .total-row-grand .total-row-label,
+        .total-row-grand .total-row-value {
+            font-size: var(--text-base, 1rem);
+            font-weight: var(--font-bold, 700);
+            color: var(--neutral-900, #18181b);
+        }
+
+        /* Facility Fee Checkbox */
+        .facility-fee-toggle {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2, 0.5rem);
+            margin-top: var(--space-1, 0.25rem);
+            font-size: var(--text-xs, 0.75rem);
+            color: var(--neutral-500, #71717a);
+            cursor: pointer;
+        }
+
+        .facility-fee-toggle input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--brand-primary, #6366f1);
+        }
+
+        /* Payment Actions */
+        .payment-actions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3, 0.75rem);
+        }
+
+        @media (min-width: 480px) {
+            .payment-actions {
+                flex-direction: row;
+            }
+        }
+
+        .btn-payment {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2, 0.5rem);
+            padding: var(--space-3, 0.75rem) var(--space-5, 1.25rem);
+            font-size: var(--text-sm, 0.875rem);
+            font-weight: var(--font-semibold, 600);
+            border-radius: var(--radius-lg, 12px);
+            text-decoration: none;
+            transition: all 150ms ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-payment svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .btn-payment-primary {
+            flex: 1;
+            background: var(--brand-primary, #6366f1);
+            color: white;
+        }
+
+        .btn-payment-primary:hover:not(:disabled) {
+            background: var(--brand-primary-hover, #4f46e5);
+        }
+
+        .btn-payment-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-payment-secondary {
+            background: white;
+            color: var(--neutral-700, #3f3f46);
+            border: 1px solid var(--neutral-300, #d4d4d8);
+        }
+
+        .btn-payment-secondary:hover:not(:disabled) {
+            background: var(--neutral-50, #fafafa);
+        }
+
+        .btn-payment-secondary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Footer Text */
+        .payment-footer {
+            font-size: var(--text-xs, 0.75rem);
+            color: var(--neutral-500, #71717a);
+            margin-top: var(--space-4, 1rem);
+            line-height: 1.5;
+        }
+
+        /* Pay Later Box */
+        .pay-later-box {
+            margin-top: var(--space-4, 1rem);
+            padding: var(--space-4, 1rem);
+            background: var(--color-info-light, #dbeafe);
+            border: 1px solid var(--color-info, #3b82f6);
+            border-radius: var(--radius-lg, 12px);
+        }
+
+        .pay-later-title {
+            font-size: var(--text-sm, 0.875rem);
+            font-weight: var(--font-semibold, 600);
+            color: var(--color-info-dark, #1e40af);
+            margin-bottom: var(--space-2, 0.5rem);
+        }
+
+        .pay-later-text {
+            font-size: var(--text-sm, 0.875rem);
+            color: var(--color-info-dark, #1e40af);
+            line-height: 1.5;
+        }
+
+        /* Utility */
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 
-<body class="bg-white text-gray-900 min-h-screen flex flex-col">
+<body style="background: var(--neutral-50, #fafafa);">
     <div id="site-header"></div>
 
-    <main class="flex-1 w-full px-4 py-6 sm:py-10">
-        <div class="mx-auto w-full max-w-6xl">
-            <div class="flex items-start sm:items-center justify-center px-4 py-4 sm:py-6">
-                <div class="w-full max-w-2xl rounded-xl bg-white p-4 sm:p-8 shadow-2xl border border-gray-300">
-                    <h1 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                        Review & Pay
-                    </h1>
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-inner">
+            <h1 class="page-header-title">Review & Pay</h1>
+            <p class="page-header-subtitle">Review your registration and complete payment.</p>
 
-                    <p class="text-xs sm:text-sm text-gray-700 mb-6">
-                        Review your registration details below. When you’re ready, click the button to continue to
-                        Stripe Checkout for secure payment.
-                    </p>
+            <!-- Progress Stepper -->
+            <div class="progress-stepper">
+                <div class="progress-step completed">
+                    <span class="progress-step-number">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </span>
+                    <span class="progress-step-label">Register</span>
+                </div>
+                <div class="progress-connector completed"></div>
+                <div class="progress-step active">
+                    <span class="progress-step-number">2</span>
+                    <span class="progress-step-label">Review & Pay</span>
+                </div>
+                <div class="progress-connector"></div>
+                <div class="progress-step inactive">
+                    <span class="progress-step-number">3</span>
+                    <span class="progress-step-label">Confirmation</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <div id="payment-error" class="hidden mb-4 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-800"></div>
+    <main class="page-content">
+        <!-- Payment Card -->
+        <div class="payment-card">
+            <div class="payment-card-header">
+                <h2 class="payment-card-title">
+                    <i data-lucide="receipt"></i>
+                    <span>Order Summary</span>
+                </h2>
+                <p class="payment-card-description">Please verify your information before proceeding.</p>
+            </div>
 
-                    <div class="rounded-lg border border-gray-200 p-4 mb-5">
-                        <div class="flex items-center justify-between gap-4 mb-3">
-                            <div class="text-sm font-semibold text-gray-900">Registration summary</div>
-                            <div id="payment-status" class="text-xs text-gray-600"></div>
+            <div class="payment-card-body">
+                <p id="payment-instructions" class="payment-instructions">
+                    Review your registration details below. When you're ready, click the button to continue to
+                    secure payment.
+                </p>
+
+                <div id="payment-error" class="payment-error hidden">
+                    <i data-lucide="alert-circle"></i>
+                    <span id="payment-error-text"></span>
+                </div>
+
+                <!-- Summary Box -->
+                <div class="summary-box">
+                    <div class="summary-header">
+                        <div class="summary-title">Registration Summary</div>
+                        <div id="payment-status" class="summary-status"></div>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-item-label">Twirler</div>
+                            <div id="sum-name" class="info-item-value">—</div>
                         </div>
-
-                        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
-                            <div>
-                                <dt class="text-gray-600">Twirler</dt>
-                                <dd id="sum-name" class="font-semibold text-gray-900">—</dd>
-                            </div>
-                            <div>
-                                <dt class="text-gray-600">Email</dt>
-                                <dd id="sum-email" class="font-semibold text-gray-900 break-words">—</dd>
-                            </div>
-                            <div>
-                                <dt class="text-gray-600">Team</dt>
-                                <dd id="sum-team" class="font-semibold text-gray-900">—</dd>
-                            </div>
-                            <div>
-                                <dt class="text-gray-600">Age division</dt>
-                                <dd id="sum-age" class="font-semibold text-gray-900">—</dd>
-                            </div>
-                        </dl>
-
-                        <div class="mt-4">
-                            <div class="text-gray-600 text-xs mb-2">Events</div>
-                            <ul id="sum-events" class="text-sm text-gray-900 list-disc pl-5 space-y-1"></ul>
-                            <div id="sum-events-empty" class="text-sm text-gray-700 italic hidden">No events found.</div>
+                        <div class="info-item">
+                            <div class="info-item-label">Email</div>
+                            <div id="sum-email" class="info-item-value">—</div>
                         </div>
-
-                        <div class="mt-5 border-t border-gray-200 pt-4">
-                            <div class="flex items-center justify-between text-sm">
-                                <div class="text-gray-700">Event subtotal</div>
-                                <div id="sum-subtotal" class="font-semibold text-gray-900">—</div>
-                            </div>
-                            <div class="flex items-center justify-between text-sm mt-1">
-                                <div class="text-gray-700">Facility fee</div>
-                                <div id="sum-fee" class="font-semibold text-gray-900">—</div>
-                            </div>
-                            <div class="flex items-center justify-between text-base mt-3">
-                                <div class="font-bold text-gray-900">Total</div>
-                                <div id="sum-total" class="font-extrabold text-gray-900">—</div>
-                            </div>
+                        <div class="info-item">
+                            <div class="info-item-label">Team</div>
+                            <div id="sum-team" class="info-item-value">—</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-item-label">Age Division</div>
+                            <div id="sum-age" class="info-item-value">—</div>
                         </div>
                     </div>
 
-                    <div class="flex flex-col sm:flex-row gap-3">
-                        <a href="./index.html"
-                            class="w-full sm:w-auto rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-center text-sm font-semibold text-gray-900 hover:bg-gray-50">
-                            Back
-                        </a>
-
-                        <button id="btn-checkout" type="button"
-                            class="w-full flex-1 rounded-lg bg-violet-600 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-violet-700 disabled:opacity-60 disabled:cursor-not-allowed">
-                            Proceed to secure payment
-                        </button>
+                    <!-- Events -->
+                    <div class="events-section">
+                        <div class="events-label">Events</div>
+                        <ul id="sum-events" class="events-list"></ul>
+                        <div id="sum-events-empty" class="events-empty hidden">No events found.</div>
                     </div>
 
-                    <p class="mt-4 text-xs text-gray-600">
-                        By continuing, you’ll be redirected to Stripe Checkout. After payment, you’ll be sent back here
-                        and then forwarded to the Thank You page.
-                    </p>
+                    <!-- Totals -->
+                    <div class="totals-section">
+                        <div class="total-row">
+                            <span class="total-row-label">Event subtotal</span>
+                            <span id="sum-subtotal" class="total-row-value">—</span>
+                        </div>
+
+                        <div id="sum-addon-row" class="total-row hidden">
+                            <span class="total-row-label" id="sum-addon-name">Optional add-on</span>
+                            <span id="sum-addon" class="total-row-value">—</span>
+                        </div>
+
+                        <div class="total-row">
+                            <div>
+                                <span class="total-row-label">Facility fee</span>
+                                <label class="facility-fee-toggle">
+                                    <input id="applyFacilityFee" type="checkbox" />
+                                    <span>Apply facility fee</span>
+                                </label>
+                            </div>
+                            <span id="sum-fee" class="total-row-value">—</span>
+                        </div>
+
+                        <div id="processing-fee-row" class="total-row">
+                            <span class="total-row-label">Processing fee</span>
+                            <span id="sum-processing" class="total-row-value">—</span>
+                        </div>
+
+                        <div class="total-row total-row-grand">
+                            <span class="total-row-label">Total</span>
+                            <span id="sum-total" class="total-row-value">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div id="payment-buttons" class="payment-actions">
+                    <a href="./index.html" class="btn-payment btn-payment-secondary">
+                        <i data-lucide="arrow-left"></i>
+                        <span>Back</span>
+                    </a>
+
+                    <button id="btn-checkout" type="button" class="btn-payment btn-payment-primary">
+                        <span>Proceed to secure payment</span>
+                        <i data-lucide="lock"></i>
+                    </button>
+
+                    <button id="btn-pay-later" type="button" class="btn-payment btn-payment-secondary hidden">
+                        <i data-lucide="clock"></i>
+                        <span>Register Now, Pay Later</span>
+                    </button>
+                </div>
+
+                <p id="payment-footer-text" class="payment-footer">
+                    By continuing, you'll be redirected to secure checkout. After payment, you'll be sent to
+                    the Thank You page.
+                </p>
+
+                <!-- Pay Later Instructions -->
+                <div id="pay-later-instructions" class="pay-later-box hidden">
+                    <h3 class="pay-later-title">Pay Later Instructions</h3>
+                    <p id="pay-later-instructions-text" class="pay-later-text"></p>
                 </div>
             </div>
         </div>
@@ -96,19 +554,40 @@
 
     <div id="site-footer"></div>
 
+    <script src="./assets/js/lib/api.js"></script>
+    <script src="./assets/js/branding.js"></script>
     <script src="./assets/js/layout.js"></script>
     <script src="./assets/js/header.js"></script>
     <script>
-        // Payment page wiring (Stripe Checkout redirect)
-        // NOTE: This page only prepares a summary and calls a backend endpoint that creates the Checkout Session.
-        // The PHP endpoint will be implemented separately.
+        // Initialize Lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
 
+        // Payment page with dynamic provider support
         const $ = (id) => document.getElementById(id);
+
+        // Payment configuration (loaded from server)
+        let paymentConfig = null;
 
         function money(n) {
             const num = Number(n);
             if (!Number.isFinite(num)) return '—';
             return `$${num.toFixed(2)}`;
+        }
+
+        function toNumber(n) {
+            const num = Number(n);
+            return Number.isFinite(num) ? num : 0;
+        }
+
+        function round2(n) {
+            return Math.round(toNumber(n) * 100) / 100;
+        }
+
+        function computeProcessingFee(baseTotal) {
+            // 2.9% of base total + $0.30
+            return round2((toNumber(baseTotal) * 0.029) + 0.30);
         }
 
         function setText(id, value) {
@@ -121,8 +600,35 @@
             try { return JSON.parse(s); } catch { return null; }
         }
 
+        function toBool(v) {
+            if (v === true || v === 1) return true;
+            const s = String(v ?? '').trim().toLowerCase();
+            return s === 'true' || s === '1' || s === 'yes' || s === 'on';
+        }
+
+        function getOptionalAddon(reg) {
+            const selected = toBool(reg?.optional_product_selected ?? reg?.optionalProductSelected ?? reg?.optionalProduct?.selected);
+            const name = String(reg?.optional_product_name ?? reg?.optionalProductName ?? reg?.optionalProduct?.name ?? '').trim();
+            const price = toNumber(reg?.optional_product_price ?? reg?.optionalProductPrice ?? reg?.optionalProduct?.price ?? 0);
+            return {
+                selected,
+                name: name || 'Optional add-on',
+                price: selected ? price : 0,
+            };
+        }
+
+        function persistRegistrationDraft(reg) {
+            try {
+                const key = __draftStorageKey || 'registrationDraft';
+                localStorage.setItem(key, JSON.stringify(reg || {}));
+            } catch (e) {
+                console.warn('[payment] failed to persist registration draft:', e);
+            }
+        }
+
+        let __draftStorageKey = null;
+
         function loadRegistrationDraft() {
-            // We don't know your exact storage key yet, so try several likely ones.
             const keys = [
                 'registration',
                 'registrationDraft',
@@ -134,16 +640,15 @@
                 const raw = localStorage.getItem(k);
                 if (!raw) continue;
                 const parsed = safeJsonParse(raw);
-                if (parsed && typeof parsed === 'object') return parsed;
+                if (parsed && typeof parsed === 'object') {
+                    __draftStorageKey = k;
+                    return parsed;
+                }
             }
             return null;
         }
 
         function normalizeEvents(reg) {
-            // Accept a few shapes:
-            // - reg.eventSelections (array of strings)
-            // - reg.event_selections_json (already array or JSON string)
-            // - reg.event_selections (array)
             const v = reg?.eventSelections ?? reg?.event_selections ?? reg?.event_selections_json;
             if (!v) return [];
             if (Array.isArray(v)) return v.map(String).filter(Boolean);
@@ -153,6 +658,22 @@
                 return v.split('|').map((s) => s.trim()).filter(Boolean);
             }
             return [];
+        }
+
+        function showError(msg) {
+            const el = $('payment-error');
+            const textEl = $('payment-error-text');
+            if (!el) return;
+            if (textEl) textEl.textContent = msg;
+            el.classList.remove('hidden');
+        }
+
+        function clearError() {
+            const el = $('payment-error');
+            const textEl = $('payment-error-text');
+            if (!el) return;
+            if (textEl) textEl.textContent = '';
+            el.classList.add('hidden');
         }
 
         function populateSummary(reg) {
@@ -183,52 +704,200 @@
             }
 
             // Totals
-            const subtotal = reg?.event_subtotal ?? reg?.eventSubtotal ?? reg?.subtotal;
-            const fee = reg?.facility_fee ?? reg?.facilityFee ?? 0;
-            const total = reg?.event_total ?? reg?.eventTotal ?? reg?.total;
+            const subtotal = toNumber(reg?.event_subtotal ?? reg?.eventSubtotal ?? reg?.subtotal);
+            const facilityFee = toNumber(reg?.facility_fee ?? reg?.facilityFee ?? 0);
+            const addon = getOptionalAddon(reg);
+
+            const applyEl = $('applyFacilityFee');
+            const applyFacility = (reg?.applyFacilityFee === 0 || reg?.applyFacilityFee === false) ? false : true;
+            if (applyEl) applyEl.checked = applyFacility;
+
+            const appliedFee = applyFacility ? facilityFee : 0;
+            const baseTotal = round2(subtotal + appliedFee + addon.price);
+            const processingFee = computeProcessingFee(baseTotal);
+            const grandTotal = round2(baseTotal + processingFee);
 
             setText('sum-subtotal', money(subtotal));
-            setText('sum-fee', money(fee));
-            setText('sum-total', money(total));
+            const addonRow = $('sum-addon-row');
+            const addonNameEl = $('sum-addon-name');
+            if (addonRow && addonNameEl) {
+                if (addon.selected && addon.price > 0) {
+                    addonNameEl.textContent = addon.name;
+                    setText('sum-addon', money(addon.price));
+                    addonRow.classList.remove('hidden');
+                } else {
+                    addonRow.classList.add('hidden');
+                    setText('sum-addon', '—');
+                }
+            }
+            setText('sum-fee', money(appliedFee));
+            setText('sum-processing', money(processingFee));
+            setText('sum-total', money(grandTotal));
+
+            reg.applyFacilityFee = applyFacility ? 1 : 0;
+            reg.facilityFeeApplied = appliedFee;
+            reg.eventSubtotal = subtotal;
+            reg.eventTotalBase = baseTotal;
+            reg.processingFee = processingFee;
+            reg.totalWithProcessing = grandTotal;
+            reg.optionalAddonName = addon.name;
+            reg.optionalAddonApplied = addon.price;
+            persistRegistrationDraft(reg);
         }
 
-        function showError(msg) {
-            const el = $('payment-error');
-            if (!el) return;
-            el.textContent = msg;
-            el.classList.remove('hidden');
+        function recalcTotals(reg) {
+            const subtotal = toNumber(reg?.event_subtotal ?? reg?.eventSubtotal ?? reg?.subtotal);
+            const facilityFee = toNumber(reg?.facility_fee ?? reg?.facilityFee ?? 0);
+            const addon = getOptionalAddon(reg);
+
+            const applyEl = $('applyFacilityFee');
+            const applyFacility = applyEl ? !!applyEl.checked : true;
+
+            const appliedFee = applyFacility ? facilityFee : 0;
+            const baseTotal = round2(subtotal + appliedFee + addon.price);
+            const processingFee = computeProcessingFee(baseTotal);
+            const grandTotal = round2(baseTotal + processingFee);
+
+            const addonRow = $('sum-addon-row');
+            const addonNameEl = $('sum-addon-name');
+            if (addonRow && addonNameEl) {
+                if (addon.selected && addon.price > 0) {
+                    addonNameEl.textContent = addon.name;
+                    setText('sum-addon', money(addon.price));
+                    addonRow.classList.remove('hidden');
+                } else {
+                    addonRow.classList.add('hidden');
+                    setText('sum-addon', '—');
+                }
+            }
+
+            setText('sum-fee', money(appliedFee));
+            setText('sum-processing', money(processingFee));
+            setText('sum-total', money(grandTotal));
+
+            reg.applyFacilityFee = applyFacility ? 1 : 0;
+            reg.facilityFeeApplied = appliedFee;
+            reg.eventSubtotal = subtotal;
+            reg.eventTotalBase = baseTotal;
+            reg.processingFee = processingFee;
+            reg.totalWithProcessing = grandTotal;
+            reg.optionalAddonName = addon.name;
+            reg.optionalAddonApplied = addon.price;
+            persistRegistrationDraft(reg);
         }
 
-        function clearError() {
-            const el = $('payment-error');
-            if (!el) return;
-            el.textContent = '';
-            el.classList.add('hidden');
+        async function loadPaymentConfig() {
+            try {
+                const res = await fetch('./api/payment/config.php');
+                const data = await res.json();
+                if (data?.ok) {
+                    paymentConfig = data;
+                    return data;
+                }
+            } catch (e) {
+                console.warn('Failed to load payment config:', e);
+            }
+            // Fallback config
+            return { provider: 'none', payLaterEnabled: false, configured: false };
         }
 
-        async function startCheckout(reg) {
+        function updateUIForProvider(config) {
+            const checkoutBtn = $('btn-checkout');
+            const payLaterBtn = $('btn-pay-later');
+            const instructionsEl = $('payment-instructions');
+            const footerText = $('payment-footer-text');
+            const processingFeeRow = $('processing-fee-row');
+
+            // Update checkout button text based on provider
+            if (checkoutBtn) {
+                switch (config.provider) {
+                    case 'stripe':
+                        checkoutBtn.innerHTML = '<span>Pay with Card</span><i data-lucide="credit-card"></i>';
+                        break;
+                    case 'paypal':
+                        checkoutBtn.innerHTML = '<span>Pay with PayPal</span><i data-lucide="wallet"></i>';
+                        break;
+                    case 'square':
+                        checkoutBtn.innerHTML = '<span>Pay with Square</span><i data-lucide="square"></i>';
+                        break;
+                    default:
+                        checkoutBtn.innerHTML = '<span>Proceed to Payment</span><i data-lucide="lock"></i>';
+                }
+
+                // Reinitialize icons after changing innerHTML
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+
+                // Hide checkout button if no provider configured
+                if (!config.configured && config.provider === 'none') {
+                    checkoutBtn.classList.add('hidden');
+                }
+            }
+
+            // Show/hide Pay Later button
+            if (payLaterBtn) {
+                if (config.payLaterEnabled) {
+                    payLaterBtn.classList.remove('hidden');
+                } else {
+                    payLaterBtn.classList.add('hidden');
+                }
+            }
+
+            // Update instructions text
+            if (instructionsEl) {
+                if (!config.hasPaymentOption) {
+                    instructionsEl.textContent = 'Payment is not currently available. Please contact the organizer.';
+                } else if (config.payLaterEnabled && !config.configured) {
+                    instructionsEl.textContent = 'Review your registration details below. You can register now and pay later.';
+                }
+            }
+
+            // Update footer text
+            if (footerText) {
+                if (config.payLaterEnabled) {
+                    footerText.textContent = 'By continuing, you\'ll be redirected to secure checkout or can choose to pay later.';
+                }
+            }
+        }
+
+        async function startCheckout(reg, provider = null) {
             clearError();
 
-            // TODO: implement this PHP endpoint.
-            // It should create a Stripe Checkout Session and return JSON: { ok: true, url: "https://checkout.stripe.com/..." }
-            const CREATE_SESSION_URL = './api/stripe/create-checkout-session.php';
+            const CREATE_SESSION_URL = './api/payment/create-session.php';
 
             const btn = $('btn-checkout');
             const status = $('payment-status');
 
-            btn.disabled = true;
+            if (btn) btn.disabled = true;
             if (status) status.textContent = 'Creating secure checkout…';
 
             try {
+                recalcTotals(reg);
+                persistRegistrationDraft(reg);
+
+                const payload = {
+                    registration: reg,
+                    pricing: {
+                        applyFacilityFee: reg.applyFacilityFee,
+                        eventSubtotal: reg.eventSubtotal,
+                        facilityFeeApplied: reg.facilityFeeApplied,
+                        baseTotal: reg.eventTotalBase,
+                        processingFee: reg.processingFee,
+                        totalWithProcessing: reg.totalWithProcessing,
+                    },
+                    successUrl: `${location.origin}${location.pathname.replace(/payment\.html$/, 'thank-you.html')}?paid=1`,
+                    cancelUrl: location.href
+                };
+
+                if (provider) {
+                    payload.provider = provider;
+                }
+
                 const res = await fetch(CREATE_SESSION_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        // Pass through what we have; server should validate and compute amounts.
-                        registration: reg,
-                        successUrl: `${location.origin}${location.pathname.replace(/payment\.html$/, 'thank-you.html')}?paid=1`,
-                        cancelUrl: location.href
-                    })
+                    body: JSON.stringify(payload)
                 });
 
                 const data = await res.json().catch(() => null);
@@ -236,35 +905,93 @@
                     throw new Error(data?.error || `Checkout session failed (${res.status})`);
                 }
 
-                if (!data.url) {
-                    throw new Error('Missing Stripe Checkout URL from server.');
+                // Store transaction ID for linking after registration
+                if (data.transactionId) {
+                    reg.paymentTransactionId = data.transactionId;
+                    reg.paymentProvider = data.provider;
+                    persistRegistrationDraft(reg);
                 }
 
-                // Redirect to Stripe Checkout
+                // For Pay Later, no redirect is needed if requiresPayment is false
+                if (data.requiresPayment === false) {
+                    // Redirect to thank you with pay_later flag
+                    location.href = `${location.origin}${location.pathname.replace(/payment\.html$/, 'thank-you.html')}?pay_later=1`;
+                    return;
+                }
+
+                if (!data.url) {
+                    throw new Error('Missing checkout URL from server.');
+                }
+
+                // Redirect to payment provider
                 location.href = data.url;
             } catch (e) {
                 console.error(e);
                 showError(e?.message || 'Failed to start checkout.');
-                btn.disabled = false;
+                if (btn) btn.disabled = false;
                 if (status) status.textContent = '';
             }
         }
 
-        (function initPaymentPage() {
+        async function startPayLater(reg) {
+            clearError();
+
+            const payLaterBtn = $('btn-pay-later');
+            const status = $('payment-status');
+
+            if (payLaterBtn) payLaterBtn.disabled = true;
+            if (status) status.textContent = 'Processing registration…';
+
+            try {
+                await startCheckout(reg, 'manual');
+            } catch (e) {
+                console.error(e);
+                showError(e?.message || 'Failed to process registration.');
+                if (payLaterBtn) payLaterBtn.disabled = false;
+                if (status) status.textContent = '';
+            }
+        }
+
+        (async function initPaymentPage() {
             const reg = loadRegistrationDraft();
+
+            // Load payment configuration
+            const config = await loadPaymentConfig();
+            paymentConfig = config;
+            updateUIForProvider(config);
+
             if (!reg) {
                 populateSummary({});
                 showError('No registration data found. Please go back and complete registration first.');
                 const btn = $('btn-checkout');
+                const payLaterBtn = $('btn-pay-later');
                 if (btn) btn.disabled = true;
+                if (payLaterBtn) payLaterBtn.disabled = true;
                 return;
             }
 
             populateSummary(reg);
 
+            const applyEl = $('applyFacilityFee');
+            if (applyEl) {
+                applyEl.addEventListener('change', () => recalcTotals(reg));
+            }
+
             const btn = $('btn-checkout');
             if (btn) {
                 btn.addEventListener('click', () => startCheckout(reg));
+            }
+
+            const payLaterBtn = $('btn-pay-later');
+            if (payLaterBtn) {
+                payLaterBtn.addEventListener('click', () => startPayLater(reg));
+            }
+
+            // Disable buttons if no payment options available
+            if (!config.hasPaymentOption) {
+                if (btn) btn.disabled = true;
+                if (payLaterBtn) payLaterBtn.disabled = true;
+                showError('Payment is not currently configured. Please contact the event organizer.');
             }
         })();
     </script>

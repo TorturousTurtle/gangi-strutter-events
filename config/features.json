@@ -1,0 +1,38 @@
+{
+  "registration": {
+    "enabled": true,
+    "requirePayment": true,
+    "allowDraftSave": true,
+    "confirmationEmail": false
+  },
+  "admin": {
+    "exportCsv": true,
+    "exportPdf": false,
+    "judgingSheets": true,
+    "scoreLabels": true,
+    "financialReports": true,
+    "emailBlast": false
+  },
+  "integrations": {
+    "stripe": true,
+    "paypal": false,
+    "square": false,
+    "mailchimp": false,
+    "googleAnalytics": false
+  },
+  "fees": {
+    "facilityFee": true,
+    "optionalProduct": true,
+    "processingFeePassthrough": true,
+    "earlyBirdPricing": false,
+    "lateFee": false,
+    "groupDiscounts": false,
+    "promoCodes": false
+  },
+  "participants": {
+    "coachSelection": true,
+    "multipleCoaches": true,
+    "duetTrioRegistration": false,
+    "waitlist": false
+  }
+}

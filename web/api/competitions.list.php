@@ -8,6 +8,17 @@ require_method('GET');
 
 $pdo = require __DIR__ . '/db.php';
 
+// Check which optional columns exist
+$hasShowOnHome = false;
+try {
+  $chk = $pdo->query("SHOW COLUMNS FROM competitions LIKE 'show_on_home'");
+  $hasShowOnHome = (bool)$chk->fetch();
+} catch (Throwable $e) {
+  // Ignore
+}
+
+$homeDisplaySelect = $hasShowOnHome ? ", show_on_home AS showOnHome, display_order AS displayOrder" : "";
+
 $stmt = $pdo->query("
   SELECT
     id,
@@ -21,6 +32,7 @@ $stmt = $pdo->query("
     event_catalog_json,
     registration_config_json,
     description
+    {$homeDisplaySelect}
   FROM competitions
   ORDER BY is_current DESC, start_at DESC, id DESC
 ");

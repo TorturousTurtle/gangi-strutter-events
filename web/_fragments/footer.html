@@ -1,12 +1,359 @@
-<footer class="mt-8 border-t border-gray-300/40 bg-[#4a4a4a] py-4">
-    <div class="mx-auto w-full max-w-5xl px-4 text-center text-sm text-gray-200">
-        <p class="font-semibold text-gray-100">GKP Events</p>
-        <p class="text-gray-300 mt-1">
-            Event Registration Portal ©2025 <span id="footerYear"></span>
-        </p>
+<footer class="site-footer">
+    <div class="footer-inner">
+        <!-- Brand Column -->
+        <div class="footer-brand">
+            <div class="footer-brand-header">
+                <div class="footer-logo" id="footerLogo">
+                    <img src="/assets/gkp-logo.png" alt="" id="footerLogoImg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <span class="footer-logo-fallback" id="footerLogoFallback" style="display:none;">
+                        <i data-lucide="trophy" class="footer-logo-icon"></i>
+                    </span>
+                </div>
+                <div class="footer-brand-text">
+                    <span class="footer-org-name" id="footerOrgName">GKP Events</span>
+                    <span class="footer-tagline" id="footerTagline">Competition Registration Made Simple</span>
+                </div>
+            </div>
+            <p class="footer-description">
+                Streamlined registration for competitions and events. Built with care for the communities we serve.
+            </p>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-links">
+            <h4 class="footer-heading">Quick Links</h4>
+            <nav class="footer-nav">
+                <a href="/" class="footer-link">
+                    <i data-lucide="home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="/register.html" class="footer-link">
+                    <i data-lucide="clipboard-list"></i>
+                    <span>Register</span>
+                </a>
+                <a href="/admin/" class="footer-link">
+                    <i data-lucide="settings"></i>
+                    <span>Admin</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Contact / Support -->
+        <div class="footer-contact">
+            <h4 class="footer-heading">Support</h4>
+            <div class="footer-contact-items">
+                <a href="mailto:support@example.com" class="footer-contact-link" id="footerEmail">
+                    <i data-lucide="mail"></i>
+                    <span>Contact Support</span>
+                </a>
+                <div class="footer-contact-item">
+                    <i data-lucide="shield-check"></i>
+                    <span>Secure Payments</span>
+                </div>
+                <div class="footer-contact-item">
+                    <i data-lucide="lock"></i>
+                    <span>Data Protected</span>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script>
-        document.getElementById("footerYear").textContent = new Date().getFullYear();
-    </script>
+    <!-- Bottom Bar -->
+    <div class="footer-bottom">
+        <div class="footer-bottom-inner">
+            <p class="footer-copyright">
+                © <span id="footerYear">2026</span> <span id="footerCopyrightName">GKP Events</span>. All rights reserved.
+            </p>
+            <div class="footer-powered">
+                <span>Powered by</span>
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="footer-powered-link">
+                    GKP Platform
+                </a>
+            </div>
+        </div>
+    </div>
 </footer>
+
+<style>
+/* ========================================
+   FOOTER STYLES
+   ======================================== */
+
+.site-footer {
+    margin-top: auto;
+    background: var(--neutral-900, #18181b);
+    color: var(--neutral-300, #d4d4d8);
+    font-size: var(--text-sm, 0.875rem);
+}
+
+.footer-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--space-10, 2.5rem) var(--space-4, 1rem);
+    display: grid;
+    gap: var(--space-8, 2rem);
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+    .footer-inner {
+        padding: var(--space-12, 3rem) var(--space-6, 1.5rem);
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .footer-inner {
+        padding: var(--space-12, 3rem) var(--space-8, 2rem);
+        grid-template-columns: 2fr 1fr 1fr;
+    }
+}
+
+/* Brand Column */
+.footer-brand {
+    grid-column: 1 / -1;
+}
+
+@media (min-width: 1024px) {
+    .footer-brand {
+        grid-column: 1;
+    }
+}
+
+.footer-brand-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3, 0.75rem);
+    margin-bottom: var(--space-4, 1rem);
+}
+
+.footer-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg, 12px);
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.footer-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.footer-logo-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--brand-primary, #6366f1), var(--brand-primary-hover, #4f46e5));
+}
+
+.footer-logo-icon {
+    width: 22px;
+    height: 22px;
+    color: white;
+}
+
+.footer-brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.footer-org-name {
+    font-size: var(--text-lg, 1.125rem);
+    font-weight: var(--font-semibold, 600);
+    color: white;
+    line-height: 1.2;
+}
+
+.footer-tagline {
+    font-size: var(--text-xs, 0.75rem);
+    color: var(--neutral-400, #a1a1aa);
+    line-height: 1;
+}
+
+.footer-description {
+    color: var(--neutral-400, #a1a1aa);
+    line-height: 1.6;
+    max-width: 320px;
+}
+
+/* Links Column */
+.footer-heading {
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-semibold, 600);
+    color: white;
+    margin-bottom: var(--space-4, 1rem);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.footer-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2, 0.5rem);
+}
+
+.footer-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 0.5rem);
+    color: var(--neutral-400, #a1a1aa);
+    text-decoration: none;
+    padding: var(--space-1, 0.25rem) 0;
+    transition: color 150ms ease;
+}
+
+.footer-link:hover {
+    color: white;
+}
+
+.footer-link i,
+.footer-link svg {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+}
+
+/* Contact Column */
+.footer-contact-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3, 0.75rem);
+}
+
+.footer-contact-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 0.5rem);
+    color: var(--neutral-400, #a1a1aa);
+    text-decoration: none;
+    transition: color 150ms ease;
+}
+
+.footer-contact-link:hover {
+    color: white;
+}
+
+.footer-contact-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 0.5rem);
+    color: var(--neutral-500, #71717a);
+}
+
+.footer-contact-link i,
+.footer-contact-link svg,
+.footer-contact-item i,
+.footer-contact-item svg {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+}
+
+/* Bottom Bar */
+.footer-bottom {
+    border-top: 1px solid var(--neutral-800, #27272a);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.footer-bottom-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--space-4, 1rem) var(--space-4, 1rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2, 0.5rem);
+    text-align: center;
+}
+
+@media (min-width: 640px) {
+    .footer-bottom-inner {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: var(--space-4, 1rem) var(--space-6, 1.5rem);
+    }
+}
+
+@media (min-width: 1024px) {
+    .footer-bottom-inner {
+        padding: var(--space-4, 1rem) var(--space-8, 2rem);
+    }
+}
+
+.footer-copyright {
+    color: var(--neutral-500, #71717a);
+    font-size: var(--text-xs, 0.75rem);
+}
+
+.footer-powered {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1, 0.25rem);
+    color: var(--neutral-500, #71717a);
+    font-size: var(--text-xs, 0.75rem);
+}
+
+.footer-powered-link {
+    color: var(--neutral-400, #a1a1aa);
+    text-decoration: none;
+    transition: color 150ms ease;
+}
+
+.footer-powered-link:hover {
+    color: var(--brand-primary, #6366f1);
+}
+</style>
+
+<script>
+(function() {
+    // Initialize Lucide icons in footer
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons({
+            icons: ['trophy', 'home', 'clipboard-list', 'settings', 'mail', 'shield-check', 'lock'],
+            attrs: { 'stroke-width': 2 }
+        });
+    }
+
+    // Set current year
+    const yearEl = document.getElementById('footerYear');
+    if (yearEl) {
+        yearEl.textContent = new Date().getFullYear();
+    }
+
+    // Update branding when loaded
+    window.addEventListener('brandingLoaded', function(e) {
+        const branding = e.detail;
+        if (!branding) return;
+
+        const orgName = document.getElementById('footerOrgName');
+        const tagline = document.getElementById('footerTagline');
+        const copyrightName = document.getElementById('footerCopyrightName');
+        const logoImg = document.getElementById('footerLogoImg');
+        const logoFallback = document.getElementById('footerLogoFallback');
+
+        if (orgName && branding.organizationName) {
+            orgName.textContent = branding.organizationName;
+        }
+        if (tagline && branding.tagline) {
+            tagline.textContent = branding.tagline;
+        }
+        if (copyrightName && branding.organizationName) {
+            copyrightName.textContent = branding.organizationName;
+        }
+        if (logoImg && branding.logoUrl) {
+            logoImg.src = branding.logoUrl;
+            logoImg.style.display = 'block';
+            if (logoFallback) logoFallback.style.display = 'none';
+        }
+    });
+})();
+</script>

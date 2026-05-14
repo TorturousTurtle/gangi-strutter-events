@@ -4,75 +4,788 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Gangi Bay State Strutters Events</title>
+    <title>GKP Events</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <!-- Styles -->
     <link rel="stylesheet" href="./assets/css/app.css" />
+    <link rel="stylesheet" href="./assets/css/design-tokens.css" />
+    <link rel="stylesheet" href="./assets/css/theme.css" />
+    <link rel="stylesheet" href="./assets/css/components.css" />
     <link rel="stylesheet" href="./assets/css/custom.css" />
+    <!-- Branding (loads dynamic theme from admin settings) -->
+    <script src="./assets/js/branding-loader.js"></script>
+    <style>
+        /* Landing Page Specific Styles */
+        .hero {
+            position: relative;
+            background: linear-gradient(135deg, var(--brand-primary, #6366f1) 0%, var(--brand-primary-hover, #4f46e5) 50%, #312e81 100%);
+            color: white;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .hero-inner {
+            position: relative;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: var(--space-12, 3rem) var(--space-4, 1rem);
+            text-align: center;
+        }
+
+        @media (min-width: 640px) {
+            .hero-inner {
+                padding: var(--space-16, 4rem) var(--space-6, 1.5rem);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .hero-inner {
+                padding: var(--space-20, 5rem) var(--space-8, 2rem);
+            }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2, 0.5rem);
+            padding: var(--space-1-5, 0.375rem) var(--space-3, 0.75rem);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            border-radius: var(--radius-full, 9999px);
+            font-size: var(--text-sm, 0.875rem);
+            font-weight: var(--font-medium, 500);
+            margin-bottom: var(--space-6, 1.5rem);
+        }
+
+        .hero-badge-dot {
+            width: 8px;
+            height: 8px;
+            background: #34d399;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .hero-title {
+            font-size: var(--text-3xl, 1.875rem);
+            font-weight: var(--font-bold, 700);
+            line-height: 1.2;
+            margin-bottom: var(--space-4, 1rem);
+            letter-spacing: -0.02em;
+        }
+
+        @media (min-width: 640px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+        }
+
+        .hero-subtitle {
+            font-size: var(--text-lg, 1.125rem);
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto var(--space-8, 2rem);
+            line-height: 1.6;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2, 0.5rem);
+            padding: var(--space-4, 1rem) var(--space-8, 2rem);
+            background: white;
+            color: var(--brand-primary, #6366f1);
+            font-size: var(--text-base, 1rem);
+            font-weight: var(--font-semibold, 600);
+            border-radius: var(--radius-xl, 16px);
+            text-decoration: none;
+            box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.2);
+            transition: all 200ms ease;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.25);
+        }
+
+        .hero-cta svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Main Content */
+        .page-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: var(--space-8, 2rem) var(--space-4, 1rem);
+        }
+
+        @media (min-width: 640px) {
+            .page-content {
+                padding: var(--space-12, 3rem) var(--space-6, 1.5rem);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .page-content {
+                padding: var(--space-16, 4rem) var(--space-8, 2rem);
+            }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3, 0.75rem);
+            margin-bottom: var(--space-6, 1.5rem);
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-lg, 12px);
+            background: linear-gradient(135deg, var(--brand-primary-light, #e0e7ff), rgba(var(--brand-primary-rgb, 99, 102, 241), 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brand-primary, #6366f1);
+        }
+
+        .section-icon svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .section-title {
+            font-size: var(--text-2xl, 1.5rem);
+            font-weight: var(--font-bold, 700);
+            color: var(--neutral-900, #18181b);
+            letter-spacing: -0.01em;
+        }
+
+        /* Competition Card */
+        .competition-card {
+            background: white;
+            border: 1px solid var(--neutral-200, #e4e4e7);
+            border-radius: var(--radius-xl, 16px);
+            overflow: hidden;
+            transition: all 200ms ease;
+        }
+
+        .competition-card:hover {
+            border-color: var(--neutral-300, #d4d4d8);
+            box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1));
+        }
+
+        .competition-card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--neutral-100, #f4f4f5), var(--neutral-200, #e4e4e7));
+        }
+
+        @media (min-width: 768px) {
+            .competition-card-image {
+                height: 240px;
+            }
+        }
+
+        .competition-card-body {
+            padding: var(--space-5, 1.25rem);
+        }
+
+        @media (min-width: 768px) {
+            .competition-card-body {
+                padding: var(--space-6, 1.5rem);
+            }
+        }
+
+        .competition-card-title {
+            font-size: var(--text-xl, 1.25rem);
+            font-weight: var(--font-semibold, 600);
+            color: var(--neutral-900, #18181b);
+            margin-bottom: var(--space-2, 0.5rem);
+        }
+
+        .competition-card-description {
+            font-size: var(--text-sm, 0.875rem);
+            color: var(--neutral-600, #52525b);
+            line-height: 1.6;
+            margin-bottom: var(--space-4, 1rem);
+        }
+
+        .competition-card-meta {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2, 0.5rem);
+            padding-top: var(--space-4, 1rem);
+            border-top: 1px solid var(--neutral-100, #f4f4f5);
+        }
+
+        .competition-meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2, 0.5rem);
+            font-size: var(--text-sm, 0.875rem);
+            color: var(--neutral-600, #52525b);
+        }
+
+        .competition-meta-item svg {
+            width: 16px;
+            height: 16px;
+            color: var(--neutral-400, #a1a1aa);
+            flex-shrink: 0;
+        }
+
+        .competition-meta-item strong {
+            color: var(--neutral-900, #18181b);
+            font-weight: var(--font-medium, 500);
+        }
+
+        .competition-card-footer {
+            padding: var(--space-4, 1rem) var(--space-5, 1.25rem);
+            background: var(--neutral-50, #fafafa);
+            border-top: 1px solid var(--neutral-100, #f4f4f5);
+        }
+
+        @media (min-width: 768px) {
+            .competition-card-footer {
+                padding: var(--space-4, 1rem) var(--space-6, 1.5rem);
+            }
+        }
+
+        .competition-register-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2, 0.5rem);
+            width: 100%;
+            padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+            background: var(--brand-primary, #6366f1);
+            color: white;
+            font-size: var(--text-sm, 0.875rem);
+            font-weight: var(--font-semibold, 600);
+            border-radius: var(--radius-lg, 12px);
+            text-decoration: none;
+            transition: all 150ms ease;
+        }
+
+        .competition-register-btn:hover {
+            background: var(--brand-primary-hover, #4f46e5);
+        }
+
+        .competition-register-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Featured Competition Card */
+        .competition-card-featured {
+            background: white;
+            border: 2px solid var(--brand-primary, #6366f1);
+            border-radius: var(--radius-xl, 16px);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1));
+            margin-bottom: var(--space-8, 2rem);
+        }
+
+        @media (min-width: 768px) {
+            .competition-card-featured {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .competition-card-featured .competition-card-image {
+            height: 250px;
+        }
+
+        @media (min-width: 768px) {
+            .competition-card-featured .competition-card-image {
+                height: 100%;
+                min-height: 320px;
+            }
+        }
+
+        .competition-card-featured .competition-card-body {
+            padding: var(--space-6, 1.5rem);
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 768px) {
+            .competition-card-featured .competition-card-body {
+                padding: var(--space-8, 2rem);
+            }
+        }
+
+        .competition-card-featured .competition-card-title {
+            font-size: var(--text-2xl, 1.5rem);
+            margin-bottom: var(--space-3, 0.75rem);
+        }
+
+        @media (min-width: 768px) {
+            .competition-card-featured .competition-card-title {
+                font-size: 1.75rem;
+            }
+        }
+
+        .competition-card-featured .competition-card-description {
+            font-size: var(--text-base, 1rem);
+            margin-bottom: var(--space-6, 1.5rem);
+            flex-grow: 1;
+        }
+
+        .competition-card-featured .competition-card-meta {
+            margin-bottom: var(--space-6, 1.5rem);
+        }
+
+        .competition-card-featured .competition-register-btn {
+            padding: var(--space-4, 1rem) var(--space-6, 1.5rem);
+            font-size: var(--text-base, 1rem);
+        }
+
+        .featured-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-1-5, 0.375rem);
+            padding: var(--space-1, 0.25rem) var(--space-3, 0.75rem);
+            background: var(--brand-primary, #6366f1);
+            color: white;
+            font-size: var(--text-xs, 0.75rem);
+            font-weight: var(--font-semibold, 600);
+            border-radius: var(--radius-full, 9999px);
+            margin-bottom: var(--space-3, 0.75rem);
+            width: fit-content;
+        }
+
+        .featured-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Multi-competition grid (secondary cards) */
+        .competitions-grid {
+            display: grid;
+            gap: var(--space-5, 1.25rem);
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 640px) {
+            .competitions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .competitions-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .competitions-grid-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2, 0.5rem);
+            margin-bottom: var(--space-4, 1rem);
+            padding-bottom: var(--space-3, 0.75rem);
+            border-bottom: 1px solid var(--neutral-200, #e4e4e7);
+        }
+
+        .competitions-grid-header h3 {
+            font-size: var(--text-lg, 1.125rem);
+            font-weight: var(--font-semibold, 600);
+            color: var(--neutral-700, #3f3f46);
+        }
+
+        .competitions-grid-header svg {
+            width: 20px;
+            height: 20px;
+            color: var(--neutral-400, #a1a1aa);
+        }
+
+        /* Smaller cards in grid */
+        .competition-card-small {
+            background: white;
+            border: 1px solid var(--neutral-200, #e4e4e7);
+            border-radius: var(--radius-lg, 12px);
+            overflow: hidden;
+            transition: all 200ms ease;
+        }
+
+        .competition-card-small:hover {
+            border-color: var(--neutral-300, #d4d4d8);
+            box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1));
+        }
+
+        .competition-card-small .competition-card-image {
+            height: 140px;
+        }
+
+        .competition-card-small .competition-card-body {
+            padding: var(--space-4, 1rem);
+        }
+
+        .competition-card-small .competition-card-title {
+            font-size: var(--text-base, 1rem);
+            margin-bottom: var(--space-1, 0.25rem);
+        }
+
+        .competition-card-small .competition-card-description {
+            font-size: var(--text-xs, 0.75rem);
+            margin-bottom: var(--space-3, 0.75rem);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .competition-card-small .competition-card-meta {
+            padding-top: var(--space-3, 0.75rem);
+            gap: var(--space-1-5, 0.375rem);
+        }
+
+        .competition-card-small .competition-meta-item {
+            font-size: var(--text-xs, 0.75rem);
+        }
+
+        .competition-card-small .competition-meta-item svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .competition-card-small .competition-card-footer {
+            padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+        }
+
+        .competition-card-small .competition-register-btn {
+            padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+            font-size: var(--text-xs, 0.75rem);
+            border-radius: var(--radius-md, 8px);
+        }
+
+        .competition-card-small .competition-status-badge {
+            top: var(--space-2, 0.5rem);
+            right: var(--space-2, 0.5rem);
+            padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
+            font-size: 0.65rem;
+        }
+
+        .competition-card-small .competition-status-badge .status-dot {
+            width: 6px;
+            height: 6px;
+        }
+
+        /* Image wrapper for badge positioning */
+        .competition-card-image-wrapper {
+            position: relative;
+        }
+
+        /* Status badges */
+        .competition-status-badge {
+            position: absolute;
+            top: var(--space-3, 0.75rem);
+            right: var(--space-3, 0.75rem);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-1-5, 0.375rem);
+            padding: var(--space-1-5, 0.375rem) var(--space-3, 0.75rem);
+            font-size: var(--text-xs, 0.75rem);
+            font-weight: var(--font-semibold, 600);
+            border-radius: var(--radius-full, 9999px);
+            backdrop-filter: blur(8px);
+        }
+
+        .competition-status-badge .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .competition-status-badge.status-open {
+            background: rgba(22, 163, 74, 0.9);
+            color: white;
+        }
+
+        .competition-status-badge.status-open .status-dot {
+            background: white;
+        }
+
+        .competition-status-badge.status-soon {
+            background: rgba(245, 158, 11, 0.9);
+            color: white;
+        }
+
+        .competition-status-badge.status-soon .status-dot {
+            background: white;
+        }
+
+        .competition-status-badge.status-closed {
+            background: rgba(113, 113, 122, 0.9);
+            color: white;
+        }
+
+        /* Muted footer for non-active competitions */
+        .competition-card-footer-muted {
+            background: var(--neutral-100, #f4f4f5);
+        }
+
+        .competition-info-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2, 0.5rem);
+            color: var(--neutral-500, #71717a);
+            font-size: var(--text-sm, 0.875rem);
+        }
+
+        .competition-info-text svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: var(--space-12, 3rem) var(--space-4, 1rem);
+        }
+
+        .empty-state-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            background: var(--neutral-100, #f4f4f5);
+            border-radius: var(--radius-full, 9999px);
+            margin-bottom: var(--space-4, 1rem);
+        }
+
+        .empty-state-icon svg {
+            width: 32px;
+            height: 32px;
+            color: var(--neutral-400, #a1a1aa);
+        }
+
+        .empty-state-title {
+            font-size: var(--text-lg, 1.125rem);
+            font-weight: var(--font-semibold, 600);
+            color: var(--neutral-900, #18181b);
+            margin-bottom: var(--space-2, 0.5rem);
+        }
+
+        .empty-state-text {
+            font-size: var(--text-sm, 0.875rem);
+            color: var(--neutral-500, #71717a);
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-4, 1rem);
+            margin-top: var(--space-12, 3rem);
+        }
+
+        @media (min-width: 640px) {
+            .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .feature-card {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3, 0.75rem);
+            padding: var(--space-4, 1rem);
+            background: var(--neutral-50, #fafafa);
+            border-radius: var(--radius-lg, 12px);
+        }
+
+        .feature-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md, 8px);
+            background: white;
+            border: 1px solid var(--neutral-200, #e4e4e7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feature-icon svg {
+            width: 18px;
+            height: 18px;
+            color: var(--brand-primary, #6366f1);
+        }
+
+        .feature-content h4 {
+            font-size: var(--text-sm, 0.875rem);
+            font-weight: var(--font-semibold, 600);
+            color: var(--neutral-900, #18181b);
+            margin-bottom: var(--space-1, 0.25rem);
+        }
+
+        .feature-content p {
+            font-size: var(--text-xs, 0.75rem);
+            color: var(--neutral-500, #71717a);
+            line-height: 1.5;
+        }
+
+        /* Loading State */
+        .loading-pulse {
+            animation: loadingPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes loadingPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
 </head>
 
-<body class="bg-white text-gray-900 min-h-screen flex flex-col">
+<body class="bg-neutral-50 text-gray-900 min-h-screen flex flex-col" style="background: var(--neutral-50, #fafafa);">
     <div id="site-header"></div>
 
-    <main class="flex-1 w-full px-4 py-6 sm:py-10">
-        <div class="mx-auto w-full max-w-6xl">
-            <div class="space-y-6 sm:space-y-8">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                <span>Registration Open</span>
+            </div>
+            <h1 class="hero-title" id="heroTitle">Welcome to Competition Registration</h1>
+            <p class="hero-subtitle" id="heroSubtitle">
+                Streamlined registration for athletes, coaches, and families.
+                Get registered in minutes and focus on what matters most.
+            </p>
+            <a href="./register.html" class="hero-cta">
+                <span>Register Now</span>
+                <i data-lucide="arrow-right"></i>
+            </a>
+        </div>
+    </section>
 
-                <section>
-                    <img
-                        src="./assets/reg-image.jpg"
-                        alt="Baton competition registration"
-                        class="w-full max-h-[420px] object-cover rounded-lg"
-                    />
-                </section>
+    <!-- Main Content -->
+    <main class="page-content">
+        <!-- Upcoming Events Section -->
+        <section>
+            <div class="section-header">
+                <div class="section-icon">
+                    <i data-lucide="calendar"></i>
+                </div>
+                <h2 class="section-title" id="competitionsSectionTitle">Upcoming Competitions</h2>
+            </div>
 
-                <section>
-                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">
-                        Upcoming Events
-                    </h2>
-                </section>
-
-                <!-- Flat, clean section (no “card” look) -->
-                <section class="border-t border-gray-200 -mt-8 pt-3">
-                    <div class="space-y-4">
-                        <div>
-                            <h3 id="eventName" class="text-lg sm:text-xl font-semibold text-gray-900 mt-8">
-                                Loading…
-                            </h3>
-                            <p id="eventDescription" class="mt-2 text-sm sm:text-base text-gray-700"></p>
-                        </div>
-
-                        <dl class="grid gap-3 text-sm sm:text-base">
-                            <div class="grid grid-cols-[90px,1fr] gap-2">
-                                <dt class="font-medium text-gray-600">Location</dt>
-                                <dd id="eventLocation" class="text-gray-900"></dd>
-                            </div>
-                            <div class="grid grid-cols-[90px,1fr] gap-2">
-                                <dt class="font-medium text-gray-600">Date</dt>
-                                <dd id="eventDates" class="text-gray-900"></dd>
-                            </div>
-                            <div class="text-gray-900">
-                                <span class="font-medium text-gray-600">Registration deadline:</span>
-                                <span id="eventDeadline"></span>
-                            </div>
-                        </dl>
-
-                        <div class="pt-2">
-                            <a href="./register.html"
-                                class="inline-flex w-full sm:w-auto items-center justify-center rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-violet-700">
-                                Register now
-                            </a>
-                        </div>
+            <!-- Featured Competition -->
+            <div id="featuredCompetition">
+                <!-- Loading state -->
+                <div class="competition-card">
+                    <div class="competition-card-body">
+                        <h3 class="competition-card-title">
+                            <span class="loading-pulse">Loading competitions...</span>
+                        </h3>
                     </div>
-                </section>
+                </div>
+            </div>
 
+            <!-- Other Competitions Grid -->
+            <div id="otherCompetitionsSection" style="display: none;">
+                <div class="competitions-grid-header">
+                    <i data-lucide="calendar-range"></i>
+                    <h3>More Competitions</h3>
+                </div>
+                <div id="otherCompetitions" class="competitions-grid"></div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i data-lucide="zap"></i>
+                </div>
+                <div class="feature-content">
+                    <h4>Quick Registration</h4>
+                    <p>Complete your registration in just a few minutes with our streamlined process.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i data-lucide="shield-check"></i>
+                </div>
+                <div class="feature-content">
+                    <h4>Secure Payments</h4>
+                    <p>Your payment information is protected with industry-standard encryption.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i data-lucide="mail"></i>
+                </div>
+                <div class="feature-content">
+                    <h4>Instant Confirmation</h4>
+                    <p>Receive immediate confirmation with all the details you need.</p>
+                </div>
             </div>
         </div>
     </main>
 
     <div id="site-footer"></div>
 
+    <script src="./assets/js/lib/api.js"></script>
+    <script src="./assets/js/branding.js"></script>
     <script src="./assets/js/layout.js"></script>
     <script src="./assets/js/header.js"></script>
     <script type="module" src="./assets/js/home.js"></script>
+    <script>
+        // Initialize Lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+        // Update hero with branding
+        window.addEventListener('brandingLoaded', function(e) {
+            const branding = e.detail;
+            if (!branding) return;
+
+            const heroTitle = document.getElementById('heroTitle');
+            const heroSubtitle = document.getElementById('heroSubtitle');
+
+            if (heroTitle && branding.organizationName) {
+                heroTitle.textContent = `Welcome to ${branding.organizationName}`;
+            }
+            if (heroSubtitle && branding.tagline) {
+                heroSubtitle.textContent = branding.tagline + '. Get registered in minutes and focus on what matters most.';
+            }
+        });
+    </script>
 </body>
 
 </html>

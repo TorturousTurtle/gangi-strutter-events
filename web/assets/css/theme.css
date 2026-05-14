@@ -1,0 +1,178 @@
+/**
+ * Theme CSS - Application Theme Layer
+ * ====================================
+ *
+ * This file maps design tokens to application-specific semantic variables
+ * and provides backward compatibility with existing code.
+ *
+ * IMPORTS: design-tokens.css (must be loaded first)
+ *
+ * This layer allows the app to use semantic names like:
+ *   --color-primary (brand action color)
+ *   --color-header-bg (header background)
+ *
+ * While the underlying values come from design tokens.
+ */
+
+:root {
+  /* ========================================
+     PRIMARY COLORS (mapped from brand tokens)
+     ======================================== */
+  --color-primary: var(--brand-primary);
+  --color-primary-hover: var(--brand-primary-hover);
+  --color-primary-light: var(--brand-primary-light);
+  --color-primary-rgb: var(--brand-primary-rgb);
+
+  /* ========================================
+     ACCENT COLORS (mapped from brand tokens)
+     ======================================== */
+  --color-accent: var(--brand-secondary);
+  --color-accent-hover: var(--brand-secondary-hover);
+  --color-accent-rgb: var(--brand-secondary-rgb);
+
+  /* ========================================
+     HEADER/FOOTER
+     ======================================== */
+  --color-header-bg: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-hover));
+  --color-header-text: var(--color-text-on-brand);
+  --color-footer-bg: var(--neutral-800);
+  --color-footer-text: var(--neutral-200);
+
+  /* ========================================
+     LEGACY ALIASES
+     For backward compatibility with existing CSS.
+     New code should use design token names directly.
+     ======================================== */
+
+  /* Fonts (legacy names) */
+  --font-heading: var(--font-sans);
+  --font-body: var(--font-sans);
+
+  /* Spacing (legacy names) */
+  --spacing-unit: 0.25rem;
+  --spacing-xs: var(--space-2);
+  --spacing-sm: var(--space-3);
+  --spacing-md: var(--space-4);
+  --spacing-lg: var(--space-6);
+  --spacing-xl: var(--space-8);
+
+  /* Transitions (legacy names) */
+  --transition-normal: var(--transition-base);
+
+  /* Card shadow (legacy) */
+  --shadow-card: var(--shadow-lg);
+}
+
+/* ========================================
+   UTILITY CLASSES USING THEME VARIABLES
+   ======================================== */
+
+/* Background colors */
+.bg-primary { background-color: var(--color-primary); }
+.bg-primary-hover:hover { background-color: var(--color-primary-hover); }
+.bg-accent { background-color: var(--color-accent); }
+.bg-surface { background-color: var(--color-surface); }
+.bg-background { background-color: var(--color-background); }
+.bg-success { background-color: var(--color-success); }
+.bg-success-light { background-color: var(--color-success-light); }
+.bg-warning { background-color: var(--color-warning); }
+.bg-warning-light { background-color: var(--color-warning-light); }
+.bg-error { background-color: var(--color-error); }
+.bg-error-light { background-color: var(--color-error-light); }
+.bg-info { background-color: var(--color-info); }
+.bg-info-light { background-color: var(--color-info-light); }
+
+/* Text colors */
+.text-primary { color: var(--color-primary); }
+.text-accent { color: var(--color-accent); }
+.text-muted { color: var(--color-text-muted); }
+.text-subtle { color: var(--color-text-subtle); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-on-primary { color: var(--color-text-on-brand); }
+.text-on-accent { color: var(--color-text); }
+.text-success { color: var(--color-success); }
+.text-warning { color: var(--color-warning); }
+.text-error { color: var(--color-error); }
+.text-info { color: var(--color-info); }
+
+/* Border colors */
+.border-primary { border-color: var(--color-primary); }
+.border-default { border-color: var(--color-border); }
+.border-strong { border-color: var(--color-border-strong); }
+
+/* Focus states */
+.focus-ring:focus,
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 var(--ring-offset, 2px) var(--color-surface),
+              0 0 0 calc(var(--ring-offset, 2px) + var(--ring-width, 3px)) var(--ring-color);
+}
+
+/* ========================================
+   TYPOGRAPHY UTILITIES
+   ======================================== */
+
+.text-xs { font-size: var(--text-xs); }
+.text-sm { font-size: var(--text-sm); }
+.text-base { font-size: var(--text-base); }
+.text-lg { font-size: var(--text-lg); }
+.text-xl { font-size: var(--text-xl); }
+.text-2xl { font-size: var(--text-2xl); }
+.text-3xl { font-size: var(--text-3xl); }
+.text-4xl { font-size: var(--text-4xl); }
+
+.font-normal { font-weight: var(--font-normal); }
+.font-medium { font-weight: var(--font-medium); }
+.font-semibold { font-weight: var(--font-semibold); }
+.font-bold { font-weight: var(--font-bold); }
+
+/* ========================================
+   SPACING UTILITIES
+   ======================================== */
+
+.p-0 { padding: var(--space-0); }
+.p-1 { padding: var(--space-1); }
+.p-2 { padding: var(--space-2); }
+.p-3 { padding: var(--space-3); }
+.p-4 { padding: var(--space-4); }
+.p-5 { padding: var(--space-5); }
+.p-6 { padding: var(--space-6); }
+.p-8 { padding: var(--space-8); }
+
+.m-0 { margin: var(--space-0); }
+.m-1 { margin: var(--space-1); }
+.m-2 { margin: var(--space-2); }
+.m-3 { margin: var(--space-3); }
+.m-4 { margin: var(--space-4); }
+
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-6 { gap: var(--space-6); }
+.gap-8 { gap: var(--space-8); }
+
+/* ========================================
+   RADIUS UTILITIES
+   ======================================== */
+
+.rounded-none { border-radius: var(--radius-none); }
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded { border-radius: var(--radius-md); }
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-2xl { border-radius: var(--radius-2xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+/* ========================================
+   SHADOW UTILITIES
+   ======================================== */
+
+.shadow-none { box-shadow: var(--shadow-none); }
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow { box-shadow: var(--shadow-md); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }
+.shadow-2xl { box-shadow: var(--shadow-2xl); }

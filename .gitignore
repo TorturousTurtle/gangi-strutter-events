@@ -1,0 +1,52 @@
+# Claude Code
+.claude/
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+
+# Config overrides (keep .example files)
+config/features.local.json
+
+# IDE and editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Dependencies
+/vendor/
+/node_modules/
+
+# Logs
+*.log
+logs/
+
+# Cache
+/cache/
+*.cache
+
+# Compiled assets
+/dist/
+
+# Uploads (if storing locally)
+/web/uploads/
+/uploads/
+
+# Custom branding assets (tenant-specific)
+/web/assets/images/custom/*
+!/web/assets/images/custom/.gitkeep
+
+# Testing
+/coverage/
+.phpunit.result.cache
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/

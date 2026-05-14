@@ -12,6 +12,21 @@ if ($id <= 0) {
 
 $pdo = require __DIR__ . '/db.php';
 
+// Check which optional columns exist (migrations may not have run yet)
+$hasImageUrl = false;
+$hasShowOnHome = false;
+try {
+  $chk = $pdo->query("SHOW COLUMNS FROM competitions LIKE 'image_url'");
+  $hasImageUrl = (bool)$chk->fetch();
+  $chk = $pdo->query("SHOW COLUMNS FROM competitions LIKE 'show_on_home'");
+  $hasShowOnHome = (bool)$chk->fetch();
+} catch (Throwable $e) {
+  // Ignore
+}
+
+$imageUrlSelect = $hasImageUrl ? ", image_url AS imageUrl" : "";
+$homeDisplaySelect = $hasShowOnHome ? ", show_on_home AS showOnHome, display_order AS displayOrder" : "";
+
 $stmt = $pdo->prepare("
   SELECT
     id,
@@ -21,10 +36,16 @@ $stmt = $pdo->prepare("
     end_at,
     registration_deadline,
     facility_fee,
+    product_enabled AS productEnabled,
+    product_name AS productName,
+    product_price AS productPrice,
     is_current AS isActive,
     event_catalog_json,
     registration_config_json,
+    fields_config_json,
     description
+    {$imageUrlSelect}
+    {$homeDisplaySelect}
   FROM competitions
   WHERE id = ?
   LIMIT 1
@@ -39,6 +60,7 @@ if (!$row) {
 // Decode registration fields JSON
 $row['eventCatalog'] = $row['event_catalog_json'] ? json_decode($row['event_catalog_json'], true) : [];
 $row['registrationOptions'] = $row['registration_config_json'] ? json_decode($row['registration_config_json'], true) : [];
-unset($row['event_catalog_json'], $row['registration_config_json']);
+$row['fieldsConfig'] = $row['fields_config_json'] ? json_decode($row['fields_config_json'], true) : null;
+unset($row['event_catalog_json'], $row['registration_config_json'], $row['fields_config_json']);
 
 json_response(['ok' => true, 'competition' => $row]);

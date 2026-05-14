@@ -1,68 +1,387 @@
-<header class="text-white shadow-sm border-b border-blue-900/30" style="background:linear-gradient(90deg,#0b5cff,#0849c6); font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-    <div class="w-full px-4 sm:px-8 lg:px-12 py-6 flex items-center justify-between" style="min-height:80px;">
-        <!-- Logo / Title -->
-        <div class="flex items-center gap-3">
-            <div style="height:44px; width:44px; display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:10px; background:rgba(255,255,255,0.12); flex:0 0 auto;">
-                <img
-                    src="/assets/gkp-logo.png"
-                    alt="Gangi Kupras Productions logo"
-                    style="max-height:40px; max-width:40px; height:auto; width:auto; object-fit:contain; display:block;"
-                />
+<header class="site-header" id="siteHeader">
+    <div class="header-inner">
+        <!-- Logo & Brand -->
+        <a href="/" class="header-brand">
+            <div class="header-logo" id="headerLogo">
+                <img src="/assets/gkp-logo.png" alt="" id="headerLogoImg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <span class="header-logo-fallback" id="headerLogoFallback" style="display:none;">
+                    <i data-lucide="trophy" class="header-logo-icon"></i>
+                </span>
             </div>
-            <h1 class="text-xl sm:text-2xl font-semibold tracking-tight">
-                GKP Events
-            </h1>
-        </div>
+            <div class="header-brand-text">
+                <span class="header-org-name" id="headerOrgName">GKP Events</span>
+                <span class="header-tagline" id="headerTagline">Competition Registration</span>
+            </div>
+        </a>
 
-        <!-- Desktop nav -->
-        <nav class="hidden sm:flex gap-3 text-base sm:text-lg font-medium">
-            <a href="/" class="px-3 py-2 rounded-md hover:bg-white/15 transition">Home</a>
-            <a href="/admin/" class="px-3 py-2 rounded-md hover:bg-white/15 transition">Admin</a>
+        <!-- Desktop Navigation -->
+        <nav class="header-nav-desktop" id="navDesktop">
+            <a href="/" class="header-nav-link">
+                <i data-lucide="home" class="header-nav-icon"></i>
+                <span>Home</span>
+            </a>
+            <a href="/register.html" class="header-nav-link">
+                <i data-lucide="clipboard-list" class="header-nav-icon"></i>
+                <span>Register</span>
+            </a>
+            <a href="/admin/" class="header-nav-link">
+                <i data-lucide="settings" class="header-nav-icon"></i>
+                <span>Admin</span>
+            </a>
         </nav>
 
-        <!-- Mobile menu button -->
-        <button id="mobileNavToggle" class="sm:hidden p-2 rounded-md hover:bg-white/15 transition"
-            aria-label="Toggle navigation menu" aria-expanded="false" type="button">
-            <!-- simple inline icons (no deps) -->
-            <span id="iconMenu" aria-hidden="true">☰</span>
-            <span id="iconClose" aria-hidden="true" class="hidden">✕</span>
+        <!-- Mobile Menu Button -->
+        <button
+            type="button"
+            class="header-mobile-toggle"
+            id="mobileNavToggle"
+            aria-label="Open menu"
+            aria-expanded="false"
+            aria-controls="mobileNav"
+        >
+            <i data-lucide="menu" class="header-mobile-icon" id="iconMenu"></i>
+            <i data-lucide="x" class="header-mobile-icon hidden" id="iconClose"></i>
         </button>
     </div>
 
-    <!-- Mobile dropdown -->
-    <nav id="mobileNav" class="hidden sm:hidden border-t border-white/20 px-4 sm:px-6 py-4 space-y-3 text-base" style="background:rgba(11,92,255,0.92);">
-        <a href="/" class="block hover:text-gray-200">Home</a>
-        <a href="/admin/" class="block hover:text-gray-200">Admin</a>
-    </nav>
-    <script>
-      (function () {
-        const btn = document.getElementById('mobileNavToggle');
-        const nav = document.getElementById('mobileNav');
-        const iconMenu = document.getElementById('iconMenu');
-        const iconClose = document.getElementById('iconClose');
-
-        // If the fragment is injected multiple times, avoid double-binding.
-        if (!btn || !nav || btn.dataset.bound === '1') return;
-        btn.dataset.bound = '1';
-
-        function setOpen(open) {
-          nav.classList.toggle('hidden', !open);
-          if (iconMenu) iconMenu.classList.toggle('hidden', open);
-          if (iconClose) iconClose.classList.toggle('hidden', !open);
-          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        }
-
-        btn.addEventListener('click', function () {
-          const open = nav.classList.contains('hidden');
-          setOpen(open);
-        });
-
-        // Close menu when a link is clicked
-        nav.addEventListener('click', function (e) {
-          const a = e.target && e.target.closest && e.target.closest('a');
-          if (a) setOpen(false);
-        });
-      })();
-    </script>
+    <!-- Mobile Navigation Drawer -->
+    <div class="header-mobile-drawer hidden" id="mobileNav" aria-hidden="true">
+        <nav class="header-nav-mobile">
+            <a href="/" class="header-mobile-link">
+                <i data-lucide="home"></i>
+                <span>Home</span>
+            </a>
+            <a href="/register.html" class="header-mobile-link">
+                <i data-lucide="clipboard-list"></i>
+                <span>Register</span>
+            </a>
+            <div class="header-mobile-divider"></div>
+            <a href="/admin/" class="header-mobile-link">
+                <i data-lucide="settings"></i>
+                <span>Admin Dashboard</span>
+            </a>
+        </nav>
+    </div>
 </header>
+
+<style>
+/* ========================================
+   HEADER STYLES
+   ======================================== */
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky, 100);
+    background: linear-gradient(135deg, var(--brand-primary, #6366f1) 0%, var(--brand-primary-hover, #4f46e5) 100%);
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--space-4, 1rem);
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4, 1rem);
+}
+
+@media (min-width: 640px) {
+    .header-inner {
+        padding: 0 var(--space-6, 1.5rem);
+    }
+}
+
+@media (min-width: 1024px) {
+    .header-inner {
+        padding: 0 var(--space-8, 2rem);
+    }
+}
+
+/* Brand / Logo */
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3, 0.75rem);
+    text-decoration: none;
+    color: white;
+    transition: opacity 150ms ease;
+}
+
+.header-brand:hover {
+    opacity: 0.9;
+}
+
+.header-logo {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-lg, 12px);
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.header-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.header-logo-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.header-logo-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.header-brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.header-org-name {
+    font-size: var(--text-lg, 1.125rem);
+    font-weight: var(--font-semibold, 600);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+.header-tagline {
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: var(--font-normal, 400);
+    opacity: 0.8;
+    line-height: 1;
+    display: none;
+}
+
+@media (min-width: 640px) {
+    .header-tagline {
+        display: block;
+    }
+}
+
+/* Desktop Navigation */
+.header-nav-desktop {
+    display: none;
+    align-items: center;
+    gap: var(--space-1, 0.25rem);
+}
+
+@media (min-width: 768px) {
+    .header-nav-desktop {
+        display: flex;
+    }
+}
+
+.header-nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 0.5rem);
+    padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-medium, 500);
+    text-decoration: none;
+    transition: all 150ms ease;
+}
+
+.header-nav-link:hover {
+    color: white;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.header-nav-link span {
+    position: relative;
+}
+
+.header-nav-link span::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: white;
+    opacity: 0;
+    transform: scaleX(0);
+    transition: all 150ms ease;
+}
+
+.header-nav-link:hover span::after {
+    opacity: 1;
+    transform: scaleX(1);
+}
+
+.header-nav-icon {
+    width: 18px;
+    height: 18px;
+    opacity: 0.9;
+}
+
+/* Mobile Toggle */
+.header-mobile-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: var(--radius-lg, 12px);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    cursor: pointer;
+    transition: background 150ms ease;
+}
+
+.header-mobile-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.header-mobile-icon {
+    width: 24px;
+    height: 24px;
+}
+
+@media (min-width: 768px) {
+    .header-mobile-toggle {
+        display: none;
+    }
+}
+
+/* Mobile Drawer */
+.header-mobile-drawer {
+    background: linear-gradient(180deg, var(--brand-primary-hover, #4f46e5) 0%, var(--brand-primary, #6366f1) 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: var(--space-4, 1rem);
+    animation: slideDown 200ms ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.header-nav-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1, 0.25rem);
+}
+
+.header-mobile-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3, 0.75rem);
+    padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+    border-radius: var(--radius-lg, 12px);
+    color: white;
+    font-size: var(--text-base, 1rem);
+    font-weight: var(--font-medium, 500);
+    text-decoration: none;
+    transition: background 150ms ease;
+}
+
+.header-mobile-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.header-mobile-link i,
+.header-mobile-link svg {
+    width: 20px;
+    height: 20px;
+    opacity: 0.9;
+}
+
+.header-mobile-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
+    margin: var(--space-2, 0.5rem) 0;
+}
+
+/* Hide class */
+.hidden {
+    display: none !important;
+}
+</style>
+
+<script>
+(function() {
+    // Initialize Lucide icons in header
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons({
+            icons: ['home', 'clipboard-list', 'settings', 'menu', 'x', 'trophy'],
+            attrs: { 'stroke-width': 2 }
+        });
+    }
+
+    // Mobile navigation toggle
+    const btn = document.getElementById('mobileNavToggle');
+    const nav = document.getElementById('mobileNav');
+    const iconMenu = document.getElementById('iconMenu');
+    const iconClose = document.getElementById('iconClose');
+
+    if (!btn || !nav || btn.dataset.bound === '1') return;
+    btn.dataset.bound = '1';
+
+    function setOpen(open) {
+        nav.classList.toggle('hidden', !open);
+        nav.setAttribute('aria-hidden', !open);
+        if (iconMenu) iconMenu.classList.toggle('hidden', open);
+        if (iconClose) iconClose.classList.toggle('hidden', !open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    }
+
+    btn.addEventListener('click', function() {
+        setOpen(nav.classList.contains('hidden'));
+    });
+
+    nav.addEventListener('click', function(e) {
+        if (e.target.closest('a')) setOpen(false);
+    });
+
+    // Close on escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !nav.classList.contains('hidden')) {
+            setOpen(false);
+        }
+    });
+
+    // Update branding when loaded
+    window.addEventListener('brandingLoaded', function(e) {
+        const branding = e.detail;
+        if (!branding) return;
+
+        const orgName = document.getElementById('headerOrgName');
+        const tagline = document.getElementById('headerTagline');
+        const logoImg = document.getElementById('headerLogoImg');
+
+        if (orgName && branding.organizationName) {
+            orgName.textContent = branding.organizationName;
+        }
+        if (tagline && branding.tagline) {
+            tagline.textContent = branding.tagline;
+        }
+        if (logoImg && branding.logoUrl) {
+            logoImg.src = branding.logoUrl;
+            logoImg.style.display = 'block';
+        }
+    });
+})();
+</script>

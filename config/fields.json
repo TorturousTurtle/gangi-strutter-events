@@ -1,0 +1,257 @@
+{
+  "_comment": "Registration form field configuration. Fields with storage='column' map to DB columns; storage='custom' goes to custom_data_json.",
+
+  "fields": [
+    {
+      "id": "first_name",
+      "type": "text",
+      "label": "First name",
+      "placeholder": "",
+      "required": true,
+      "enabled": true,
+      "order": 10,
+      "storage": "column",
+      "column": "first_name",
+      "width": "half",
+      "validation": {
+        "minLength": 1,
+        "maxLength": 100
+      }
+    },
+    {
+      "id": "last_name",
+      "type": "text",
+      "label": "Last name",
+      "placeholder": "",
+      "required": true,
+      "enabled": true,
+      "order": 20,
+      "storage": "column",
+      "column": "last_name",
+      "width": "half",
+      "validation": {
+        "minLength": 1,
+        "maxLength": 100
+      }
+    },
+    {
+      "id": "date_of_birth",
+      "type": "date",
+      "label": "Date of birth",
+      "required": true,
+      "enabled": true,
+      "order": 30,
+      "storage": "column",
+      "column": "date_of_birth",
+      "width": "third",
+      "validation": {
+        "minAge": 3,
+        "maxAge": 99
+      }
+    },
+    {
+      "id": "gender",
+      "type": "select",
+      "label": "Gender",
+      "required": true,
+      "enabled": true,
+      "order": 40,
+      "storage": "column",
+      "column": "gender",
+      "width": "third",
+      "options": [
+        { "value": "", "label": "Select…", "disabled": true },
+        { "value": "Female", "label": "Female" },
+        { "value": "Male", "label": "Male" },
+        { "value": "Non-binary", "label": "Non-binary" },
+        { "value": "Prefer not to say", "label": "Prefer not to say" },
+        { "value": "Other", "label": "Other" }
+      ]
+    },
+    {
+      "id": "gender_other",
+      "type": "text",
+      "label": "Please specify",
+      "placeholder": "",
+      "required": false,
+      "enabled": true,
+      "order": 41,
+      "storage": "custom",
+      "width": "third",
+      "condition": {
+        "field": "gender",
+        "operator": "equals",
+        "value": "Other"
+      }
+    },
+    {
+      "id": "age_division",
+      "type": "select",
+      "label": "Age division",
+      "required": false,
+      "enabled": true,
+      "order": 50,
+      "storage": "column",
+      "column": "age_division",
+      "width": "third",
+      "helpText": "Will be auto-calculated from date of birth if left blank.",
+      "options": [
+        { "value": "", "label": "Select…" },
+        { "value": "0-6", "label": "0–6" },
+        { "value": "7-9", "label": "7–9" },
+        { "value": "10-12", "label": "10–12" },
+        { "value": "13-15", "label": "13–15" },
+        { "value": "16+", "label": "16+" }
+      ]
+    },
+    {
+      "id": "coach_selections",
+      "type": "coach-select",
+      "label": "{{instructorPlural}}",
+      "required": false,
+      "enabled": true,
+      "order": 60,
+      "storage": "column",
+      "column": "coach_selections_json",
+      "width": "full",
+      "helpText": "Select all that apply.",
+      "allowOther": true,
+      "otherLabel": "Other",
+      "otherPlaceholder": "Enter {{instructor}} name"
+    },
+    {
+      "id": "team_name",
+      "type": "text",
+      "label": "{{group}}",
+      "placeholder": "{{group}} / studio / school",
+      "required": false,
+      "enabled": true,
+      "order": 70,
+      "storage": "column",
+      "column": "team_name",
+      "width": "full"
+    },
+    {
+      "id": "home_phone",
+      "type": "tel",
+      "label": "Phone number",
+      "placeholder": "",
+      "required": false,
+      "enabled": true,
+      "order": 80,
+      "storage": "column",
+      "column": "home_phone",
+      "width": "half"
+    },
+    {
+      "id": "email",
+      "type": "email",
+      "label": "Email address",
+      "placeholder": "",
+      "required": true,
+      "enabled": true,
+      "order": 90,
+      "storage": "column",
+      "column": "email",
+      "width": "half",
+      "validation": {
+        "pattern": "email"
+      }
+    },
+    {
+      "id": "emergency_contact",
+      "type": "text",
+      "label": "Emergency contact name",
+      "placeholder": "",
+      "required": false,
+      "enabled": false,
+      "order": 100,
+      "storage": "custom",
+      "width": "half"
+    },
+    {
+      "id": "emergency_phone",
+      "type": "tel",
+      "label": "Emergency contact phone",
+      "placeholder": "",
+      "required": false,
+      "enabled": false,
+      "order": 110,
+      "storage": "custom",
+      "width": "half"
+    },
+    {
+      "id": "medical_notes",
+      "type": "textarea",
+      "label": "Medical notes / allergies",
+      "placeholder": "Any medical conditions or allergies we should know about",
+      "required": false,
+      "enabled": false,
+      "order": 120,
+      "storage": "custom",
+      "width": "full"
+    },
+    {
+      "id": "tshirt_size",
+      "type": "select",
+      "label": "T-shirt size",
+      "required": false,
+      "enabled": false,
+      "order": 130,
+      "storage": "custom",
+      "width": "half",
+      "options": [
+        { "value": "", "label": "Select…" },
+        { "value": "ys", "label": "Youth Small" },
+        { "value": "ym", "label": "Youth Medium" },
+        { "value": "yl", "label": "Youth Large" },
+        { "value": "as", "label": "Adult Small" },
+        { "value": "am", "label": "Adult Medium" },
+        { "value": "al", "label": "Adult Large" },
+        { "value": "axl", "label": "Adult XL" },
+        { "value": "axxl", "label": "Adult XXL" }
+      ]
+    }
+  ],
+
+  "sections": [
+    {
+      "id": "registrant",
+      "title": "{{participant}} details",
+      "fields": ["first_name", "last_name", "date_of_birth", "gender", "gender_other", "age_division"]
+    },
+    {
+      "id": "affiliation",
+      "title": "{{group}} & {{instructor}}",
+      "fields": ["coach_selections", "team_name"]
+    },
+    {
+      "id": "contact",
+      "title": "Contact information",
+      "fields": ["home_phone", "email"]
+    },
+    {
+      "id": "emergency",
+      "title": "Emergency contact",
+      "fields": ["emergency_contact", "emergency_phone"],
+      "collapsible": true,
+      "collapsed": true
+    },
+    {
+      "id": "additional",
+      "title": "Additional information",
+      "fields": ["medical_notes", "tshirt_size"],
+      "collapsible": true,
+      "collapsed": true
+    }
+  ],
+
+  "terminology": {
+    "participant": "Twirler",
+    "participantPlural": "Twirlers",
+    "instructor": "Coach",
+    "instructorPlural": "Coaches",
+    "group": "Team",
+    "groupPlural": "Teams"
+  }
+}

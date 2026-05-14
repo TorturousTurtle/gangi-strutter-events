@@ -1,0 +1,363 @@
+/**
+ * Design Tokens - CSS Custom Properties
+ * =====================================
+ *
+ * This file defines the design system foundation. All colors, typography,
+ * spacing, and other visual properties should reference these tokens.
+ *
+ * FRAMEWORK-AGNOSTIC: These tokens work with any JS framework (React, Vue, etc.)
+ * and can be used directly in CSS or accessed via JavaScript.
+ *
+ * SECTIONS:
+ * 1. Brand Colors (admin-customizable via Settings)
+ * 2. Semantic Colors (fixed across all tenants)
+ * 3. Neutral Palette (light mode)
+ * 4. Typography
+ * 5. Spacing
+ * 6. Borders & Radius
+ * 7. Shadows & Elevation
+ * 8. Transitions & Animation
+ * 9. Z-Index Scale
+ * 10. Breakpoints (as reference, can't use in media queries)
+ */
+
+:root {
+  /* ═══════════════════════════════════════════════════════════════════════════
+     1. BRAND COLORS
+     These are customizable by admins via Settings > Branding.
+     The BrandingLoader.js will override these at runtime.
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  /* Primary - main brand color, used for buttons, links, active states */
+  --brand-primary: #6366f1;           /* Indigo - default */
+  --brand-primary-hover: #4f46e5;
+  --brand-primary-light: #e0e7ff;
+  --brand-primary-rgb: 99, 102, 241;  /* For rgba() usage */
+
+  /* Secondary/Accent - complementary color for highlights */
+  --brand-secondary: #f59e0b;         /* Amber - default */
+  --brand-secondary-hover: #d97706;
+  --brand-secondary-light: #fef3c7;
+  --brand-secondary-rgb: 245, 158, 11;
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     2. SEMANTIC COLORS
+     Fixed colors for consistent meaning across all tenants.
+     DO NOT customize these - they communicate universal states.
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  /* Success - completed, paid, confirmed */
+  --color-success: #16a34a;
+  --color-success-hover: #15803d;
+  --color-success-light: #dcfce7;
+  --color-success-rgb: 22, 163, 74;
+
+  /* Warning - pending, needs attention */
+  --color-warning: #ca8a04;
+  --color-warning-hover: #a16207;
+  --color-warning-light: #fef9c3;
+  --color-warning-rgb: 202, 138, 4;
+
+  /* Error/Danger - failed, destructive actions */
+  --color-error: #dc2626;
+  --color-error-hover: #b91c1c;
+  --color-error-light: #fee2e2;
+  --color-error-rgb: 220, 38, 38;
+
+  /* Info - neutral information, help */
+  --color-info: #0284c7;
+  --color-info-hover: #0369a1;
+  --color-info-light: #e0f2fe;
+  --color-info-rgb: 2, 132, 199;
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     3. NEUTRAL PALETTE
+     Gray scale from lightest (50) to darkest (950).
+     Based on Tailwind's Zinc palette for a modern, slightly warm feel.
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  --neutral-50: #fafafa;
+  --neutral-100: #f4f4f5;
+  --neutral-200: #e4e4e7;
+  --neutral-300: #d4d4d8;
+  --neutral-400: #a1a1aa;
+  --neutral-500: #71717a;
+  --neutral-600: #52525b;
+  --neutral-700: #3f3f46;
+  --neutral-800: #27272a;
+  --neutral-900: #18181b;
+  --neutral-950: #09090b;
+
+  /* Semantic neutral aliases */
+  --color-background: var(--neutral-50);
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-border: var(--neutral-200);
+  --color-border-light: var(--neutral-100);
+  --color-border-strong: var(--neutral-300);
+
+  /* Text colors */
+  --color-text: var(--neutral-900);
+  --color-text-secondary: var(--neutral-700);
+  --color-text-muted: var(--neutral-500);
+  --color-text-subtle: var(--neutral-400);
+  --color-text-on-brand: #ffffff;
+  --color-text-on-dark: #ffffff;
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     4. TYPOGRAPHY
+     Font families, sizes, weights, and line heights.
+     Using Inter as primary - clean, readable, professional.
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  /* Font Families */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+               'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular,
+               Menlo, Monaco, Consolas, monospace;
+
+  /* Font Sizes - using rem for accessibility (respects user font size) */
+  --text-xs: 0.75rem;      /* 12px */
+  --text-sm: 0.875rem;     /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg: 1.125rem;     /* 18px */
+  --text-xl: 1.25rem;      /* 20px */
+  --text-2xl: 1.5rem;      /* 24px */
+  --text-3xl: 1.875rem;    /* 30px */
+  --text-4xl: 2.25rem;     /* 36px */
+  --text-5xl: 3rem;        /* 48px */
+
+  /* Font Weights */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+
+  /* Line Heights */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+
+  /* Letter Spacing */
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     5. SPACING
+     Consistent spacing scale based on 4px (0.25rem) unit.
+     Use these for margins, padding, gaps.
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  --space-0: 0;
+  --space-px: 1px;
+  --space-0-5: 0.125rem;   /* 2px */
+  --space-1: 0.25rem;      /* 4px */
+  --space-1-5: 0.375rem;   /* 6px */
+  --space-2: 0.5rem;       /* 8px */
+  --space-2-5: 0.625rem;   /* 10px */
+  --space-3: 0.75rem;      /* 12px */
+  --space-3-5: 0.875rem;   /* 14px */
+  --space-4: 1rem;         /* 16px */
+  --space-5: 1.25rem;      /* 20px */
+  --space-6: 1.5rem;       /* 24px */
+  --space-7: 1.75rem;      /* 28px */
+  --space-8: 2rem;         /* 32px */
+  --space-9: 2.25rem;      /* 36px */
+  --space-10: 2.5rem;      /* 40px */
+  --space-11: 2.75rem;     /* 44px */
+  --space-12: 3rem;        /* 48px */
+  --space-14: 3.5rem;      /* 56px */
+  --space-16: 4rem;        /* 64px */
+  --space-20: 5rem;        /* 80px */
+  --space-24: 6rem;        /* 96px */
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     6. BORDERS & RADIUS
+     Border widths and corner radius values.
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  /* Border Widths */
+  --border-0: 0;
+  --border-1: 1px;
+  --border-2: 2px;
+  --border-4: 4px;
+
+  /* Border Radius */
+  --radius-none: 0;
+  --radius-sm: 0.25rem;    /* 4px - subtle rounding */
+  --radius-md: 0.375rem;   /* 6px - default inputs */
+  --radius-lg: 0.5rem;     /* 8px - cards, buttons */
+  --radius-xl: 0.75rem;    /* 12px - modals, large cards */
+  --radius-2xl: 1rem;      /* 16px - prominent elements */
+  --radius-3xl: 1.5rem;    /* 24px - hero sections */
+  --radius-full: 9999px;   /* Pills, avatars */
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     7. SHADOWS & ELEVATION
+     Box shadows for depth and hierarchy.
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  --shadow-none: none;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+  /* Colored shadows using brand color */
+  --shadow-brand: 0 4px 14px -3px rgb(var(--brand-primary-rgb) / 0.3);
+
+  /* Inner shadow (inset) */
+  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+
+  /* Focus ring */
+  --ring-width: 3px;
+  --ring-offset: 2px;
+  --ring-color: rgb(var(--brand-primary-rgb) / 0.3);
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     8. TRANSITIONS & ANIMATION
+     Duration and easing for smooth interactions.
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  /* Durations */
+  --duration-75: 75ms;
+  --duration-100: 100ms;
+  --duration-150: 150ms;
+  --duration-200: 200ms;
+  --duration-300: 300ms;
+  --duration-500: 500ms;
+  --duration-700: 700ms;
+  --duration-1000: 1000ms;
+
+  /* Easing Functions */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* Common Transitions */
+  --transition-fast: var(--duration-150) var(--ease-out);
+  --transition-base: var(--duration-200) var(--ease-out);
+  --transition-slow: var(--duration-300) var(--ease-out);
+  --transition-colors: color var(--duration-150) var(--ease-out),
+                       background-color var(--duration-150) var(--ease-out),
+                       border-color var(--duration-150) var(--ease-out);
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     9. Z-INDEX SCALE
+     Consistent stacking order for overlapping elements.
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  --z-behind: -1;
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-fixed: 30;
+  --z-modal-backdrop: 40;
+  --z-modal: 50;
+  --z-popover: 60;
+  --z-tooltip: 70;
+  --z-toast: 80;
+  --z-max: 9999;
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     10. BREAKPOINTS (Reference Only)
+     CSS custom properties can't be used in media queries, but these
+     document the breakpoint scale used throughout the app.
+
+     Mobile-first approach:
+     - Default styles apply to mobile (< 640px)
+     - Use min-width media queries to add complexity
+
+     @media (min-width: 640px)  { } // sm - landscape phones
+     @media (min-width: 768px)  { } // md - tablets
+     @media (min-width: 1024px) { } // lg - laptops
+     @media (min-width: 1280px) { } // xl - desktops
+     @media (min-width: 1536px) { } // 2xl - large desktops
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+/* =============================================================================
+   DARK MODE (Future)
+   Uncomment and customize when implementing dark mode.
+   Toggle via: document.documentElement.setAttribute('data-theme', 'dark')
+   ============================================================================= */
+
+/*
+[data-theme="dark"] {
+  --color-background: var(--neutral-900);
+  --color-surface: var(--neutral-800);
+  --color-surface-raised: var(--neutral-700);
+  --color-border: var(--neutral-700);
+  --color-border-light: var(--neutral-800);
+  --color-border-strong: var(--neutral-600);
+
+  --color-text: var(--neutral-50);
+  --color-text-secondary: var(--neutral-300);
+  --color-text-muted: var(--neutral-400);
+  --color-text-subtle: var(--neutral-500);
+
+  --brand-primary-light: rgb(var(--brand-primary-rgb) / 0.2);
+  --brand-secondary-light: rgb(var(--brand-secondary-rgb) / 0.2);
+  --color-success-light: rgb(var(--color-success-rgb) / 0.2);
+  --color-warning-light: rgb(var(--color-warning-rgb) / 0.2);
+  --color-error-light: rgb(var(--color-error-rgb) / 0.2);
+  --color-info-light: rgb(var(--color-info-rgb) / 0.2);
+}
+*/
+
+/* =============================================================================
+   PRESETS - Brand Color Options
+   These are available in the admin color picker as suggested starting points.
+
+   Rose Gold:      #b76e79 - elegant, feminine
+   Royal Purple:   #7c3aed - regal, competitive
+   Midnight Navy:  #1e3a8a - professional, trustworthy
+   Champagne Gold: #d4af37 - premium, celebratory
+   Hot Pink:       #ec4899 - energetic, youthful
+   Emerald:        #10b981 - fresh, natural
+   Coral:          #f97316 - warm, inviting
+   Sapphire:       #2563eb - classic, reliable
+   ============================================================================= */
+
+/* =============================================================================
+   UTILITY: Focus Visible
+   Modern focus styles that only appear for keyboard navigation.
+   ============================================================================= */
+
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 var(--ring-offset) var(--color-surface),
+              0 0 0 calc(var(--ring-offset) + var(--ring-width)) var(--ring-color);
+}
+
+/* =============================================================================
+   UTILITY: Reduced Motion
+   Respect user's motion preferences for accessibility.
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

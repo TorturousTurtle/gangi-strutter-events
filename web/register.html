@@ -5,122 +5,447 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Event Registration</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <!-- Styles -->
     <link rel="stylesheet" href="./assets/css/app.css" />
+    <link rel="stylesheet" href="./assets/css/design-tokens.css" />
+    <link rel="stylesheet" href="./assets/css/theme.css" />
+    <link rel="stylesheet" href="./assets/css/components.css" />
     <link rel="stylesheet" href="./assets/css/custom.css" />
+    <!-- Branding (loads dynamic theme from admin settings) -->
+    <script src="./assets/js/branding-loader.js"></script>
+    <style>
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--brand-primary, #6366f1) 0%, var(--brand-primary-hover, #4f46e5) 100%);
+            color: white;
+            padding: var(--space-6, 1.5rem) var(--space-4, 1rem) 0;
+        }
+        @media (min-width: 640px) { .page-header { padding: var(--space-8, 2rem) var(--space-6, 1.5rem) 0; } }
+        .page-header-inner { max-width: 1200px; margin: 0 auto; }
+        .page-header-title { font-size: var(--text-2xl, 1.5rem); font-weight: var(--font-bold, 700); letter-spacing: -0.01em; margin-bottom: var(--space-1, 0.25rem); }
+        @media (min-width: 640px) { .page-header-title { font-size: var(--text-3xl, 1.875rem); } }
+        .page-header-subtitle { font-size: var(--text-sm, 0.875rem); opacity: 0.9; }
+
+        /* Page Content */
+        .page-content { max-width: 1200px; margin: 0 auto; padding: var(--space-6, 1.5rem) var(--space-4, 1rem); }
+        @media (min-width: 640px) { .page-content { padding: var(--space-8, 2rem) var(--space-6, 1.5rem); } }
+
+        /* Loading/Error States */
+        .loading-state { text-align: center; padding: var(--space-12, 3rem) var(--space-4, 1rem); }
+        .loading-spinner { width: 40px; height: 40px; border: 3px solid var(--neutral-200, #e4e4e7); border-top-color: var(--brand-primary, #6366f1); border-radius: 50%; margin: 0 auto var(--space-4, 1rem); animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { font-size: var(--text-sm, 0.875rem); color: var(--neutral-500, #71717a); }
+        .error-state { text-align: center; padding: var(--space-8, 2rem); background: white; border: 1px solid var(--neutral-200, #e4e4e7); border-radius: var(--radius-xl, 16px); }
+        .error-icon { width: 48px; height: 48px; margin: 0 auto var(--space-4, 1rem); color: var(--color-error, #dc2626); }
+        .error-message { font-size: var(--text-sm, 0.875rem); color: var(--color-error, #dc2626); margin-bottom: var(--space-4, 1rem); }
+
+        .hidden { display: none !important; }
+    </style>
 </head>
 
-<body class="bg-white text-gray-900 min-h-screen flex flex-col">
+<body style="background: var(--neutral-50, #fafafa);">
     <div id="site-header"></div>
 
-    <main class="flex-1 w-full px-4 py-6 sm:py-10">
-        <div class="mx-auto w-full max-w-6xl">
+    <!-- Page Header with Stepper -->
+    <div class="page-header">
+        <div class="page-header-inner">
+            <h1 id="pageTitle" class="page-header-title">Event Registration</h1>
+            <p class="page-header-subtitle">Complete the steps below to register for the competition.</p>
 
-            <div class="space-y-4">
-                <h1 class="text-xl sm:text-2xl font-bold text-gray-900">
-                    Event Registration
-                </h1>
+            <!-- 5-Step Progress Stepper -->
+            <div class="wizard-stepper" id="wizardStepper">
+                <div class="wizard-step active" data-step="participant">
+                    <span class="wizard-step-number">1</span>
+                    <span class="wizard-step-label">Participant</span>
+                </div>
+                <div class="wizard-connector"></div>
+                <div class="wizard-step inactive" data-step="coach">
+                    <span class="wizard-step-number">2</span>
+                    <span class="wizard-step-label">Coach</span>
+                </div>
+                <div class="wizard-connector"></div>
+                <div class="wizard-step inactive" data-step="events">
+                    <span class="wizard-step-number">3</span>
+                    <span class="wizard-step-label">Events</span>
+                </div>
+                <div class="wizard-connector"></div>
+                <div class="wizard-step inactive" data-step="extras">
+                    <span class="wizard-step-number">4</span>
+                    <span class="wizard-step-label">Extras</span>
+                </div>
+                <div class="wizard-connector"></div>
+                <div class="wizard-step inactive" data-step="review">
+                    <span class="wizard-step-number">5</span>
+                    <span class="wizard-step-label">Review</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                <form id="registrationForm" class="space-y-6">
+    <main class="page-content">
+        <!-- Loading state -->
+        <div id="loadingState" class="loading-state">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Loading registration form...</p>
+        </div>
 
-                    <!-- Form container -->
-                    <div class="admin-card span-12" style="margin-top:0;">
-                      <h2 class="text-lg font-semibold text-gray-900">Registrant details</h2>
+        <!-- Error state -->
+        <div id="errorState" class="hidden error-state">
+            <i data-lucide="alert-circle" class="error-icon"></i>
+            <p class="error-message" id="errorMessage">Unable to load registration form.</p>
+            <button type="button" onclick="location.reload()" class="btn btn-outline">
+                <i data-lucide="refresh-cw"></i>
+                Try again
+            </button>
+        </div>
 
-                      <div style="display:grid; gap:1rem; grid-template-columns: repeat(12, 1fr); margin-top:1rem;">
+        <!-- Wizard Container -->
+        <div id="wizardContainer" class="hidden wizard-container has-sticky-footer">
+            <div class="wizard-layout">
+                <!-- Main Content Area -->
+                <div class="wizard-main">
+                    <!-- Step 1: Participant Information -->
+                    <div id="step-participant" class="wizard-step-view active">
+                        <div class="reg-form-card">
+                            <div class="reg-form-card-header">
+                                <h2 class="reg-form-card-title">
+                                    <i data-lucide="user"></i>
+                                    <span>Who's competing today?</span>
+                                </h2>
+                                <p class="reg-form-card-description">Enter the participant's information.</p>
+                            </div>
+                            <div class="reg-form-card-body">
+                                <div id="participantFields">
+                                    <!-- Rendered by JS -->
+                                </div>
 
-                        <!-- First / Last -->
-                        <div style="grid-column: span 6;">
-                          <label class="block font-medium text-gray-800" for="firstName">First name</label>
-                          <input id="firstName" name="firstName" required class="form-control" />
+                                <!-- Age Division Auto-Display -->
+                                <div id="ageDivisionResult" class="wizard-age-result hidden">
+                                    <i data-lucide="check-circle"></i>
+                                    <span>Age Division: <strong id="ageDivisionValue">--</strong></span>
+                                </div>
+                            </div>
                         </div>
 
-                        <div style="grid-column: span 6;">
-                          <label class="block font-medium text-gray-800" for="lastName">Last name</label>
-                          <input id="lastName" name="lastName" required class="form-control" />
+                        <!-- Step 1 Navigation -->
+                        <div class="wizard-nav">
+                            <div class="wizard-autosave" id="autosaveIndicator">
+                                <i data-lucide="cloud"></i>
+                                <span>Progress saved automatically</span>
+                            </div>
+                            <button type="button" class="wizard-nav-next" id="step1Next">
+                                <span>Continue</span>
+                                <i data-lucide="arrow-right"></i>
+                            </button>
                         </div>
-
-                        <!-- DOB / Gender / Age division -->
-                        <div style="grid-column: span 4;">
-                          <label class="block font-medium text-gray-800" for="dateOfBirth">Date of birth</label>
-                          <input id="dateOfBirth" name="dateOfBirth" type="date" required class="form-control" />
-                        </div>
-
-                        <div style="grid-column: span 4;">
-                          <label class="block font-medium text-gray-800" for="gender">Gender</label>
-                          <select id="gender" name="gender" required class="form-control">
-                            <option value="" disabled selected>Select…</option>
-                            <option>Female</option>
-                            <option>Male</option>
-                            <option>Non-binary</option>
-                            <option>Prefer not to say</option>
-                            <option>Other</option>
-                          </select>
-                        </div>
-
-                        <div style="grid-column: span 4;">
-                          <label class="block font-medium text-gray-800" for="ageDivision">Age division</label>
-                          <select id="ageDivision" name="ageDivision" class="form-control">
-                            <option value="" selected>Select…</option>
-                            <option value="0-6">0–6</option>
-                            <option value="7-9">7–9</option>
-                            <option value="10-12">10–12</option>
-                            <option value="13-15">13–15</option>
-                            <option value="16+">16+</option>
-                          </select>
-                        </div>
-
-                        <!-- Coach -->
-                        <div style="grid-column: span 12;">
-                          <label class="block font-medium text-gray-800" for="coachName">Coach name</label>
-                          <input id="coachName" name="coachName" class="form-control" placeholder="Coach or instructor name" />
-                        </div>
-
-                        <!-- Team -->
-                        <div style="grid-column: span 12;">
-                          <label class="block font-medium text-gray-800" for="teamName">Team</label>
-                          <input id="teamName" name="teamName" class="form-control" placeholder="Team / studio / school" />
-                        </div>
-
-                        <!-- Contact -->
-                        <div style="grid-column: span 6;">
-                          <label class="block font-medium text-gray-800" for="homePhone">Home phone number</label>
-                          <input id="homePhone" name="homePhone" class="form-control" />
-                        </div>
-
-                        <div style="grid-column: span 6;">
-                          <label class="block font-medium text-gray-800" for="email">Email address</label>
-                          <input id="email" name="email" type="email" required class="form-control" />
-                        </div>
-
-                      </div>
-
-                      <!-- Event Options mount (rendered by register.js) -->
-                      <div id="eventOptionsMount" style="margin-top:1rem;"></div>
-
-                      <!-- Error output for register.js -->
-                      <p id="formError" class="hidden text-xs text-red-600" style="margin-top:0.75rem;"></p>
-
-                      <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-top:1rem;">
-                        <p class="text-xs text-gray-600">Payment will be completed on the next step once a provider is added.</p>
-
-                        <button type="submit" class="btn btn-primary">
-                          Proceed to payment
-                        </button>
-                      </div>
                     </div>
 
-                </form>
+                    <!-- Step 2: Coach & Team -->
+                    <div id="step-coach" class="wizard-step-view">
+                        <div class="reg-form-card">
+                            <div class="reg-form-card-header">
+                                <h2 class="reg-form-card-title">
+                                    <i data-lucide="users"></i>
+                                    <span>Who's your coach?</span>
+                                </h2>
+                                <p class="reg-form-card-description">Select your coach and enter your team name.</p>
+                            </div>
+                            <div class="reg-form-card-body">
+                                <div id="coachFields">
+                                    <!-- Rendered by JS -->
+                                </div>
+                            </div>
+                        </div>
 
+                        <!-- Step 2 Navigation -->
+                        <div class="wizard-nav">
+                            <button type="button" class="wizard-nav-back" id="step2Back">
+                                <i data-lucide="arrow-left"></i>
+                                <span>Back</span>
+                            </button>
+                            <button type="button" class="wizard-nav-next" id="step2Next">
+                                <span>Continue</span>
+                                <i data-lucide="arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Event Selection -->
+                    <div id="step-events" class="wizard-step-view">
+                        <div class="reg-form-card">
+                            <div class="reg-form-card-header">
+                                <h2 class="reg-form-card-title">
+                                    <i data-lucide="trophy"></i>
+                                    <span>Select your events</span>
+                                </h2>
+                                <p class="reg-form-card-description" id="eventsDescription">Choose the events you want to enter.</p>
+                            </div>
+                            <div class="reg-form-card-body">
+                                <div id="eventOptionsList">
+                                    <!-- Rendered by JS -->
+                                </div>
+
+                                <!-- Events Subtotal -->
+                                <div class="reg-cost-summary" id="eventsSubtotalSection">
+                                    <div class="reg-cost-row">
+                                        <span class="reg-cost-row-label">Selected events (<span id="selectedEventsCount">0</span>)</span>
+                                        <span id="eventsSubtotal" class="reg-cost-row-value">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 Navigation -->
+                        <div class="wizard-nav">
+                            <button type="button" class="wizard-nav-back" id="step3Back">
+                                <i data-lucide="arrow-left"></i>
+                                <span>Back</span>
+                            </button>
+                            <button type="button" class="wizard-nav-next" id="step3Next">
+                                <span>Continue</span>
+                                <i data-lucide="arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Extras/Add-ons -->
+                    <div id="step-extras" class="wizard-step-view">
+                        <div class="reg-form-card">
+                            <div class="reg-form-card-header">
+                                <h2 class="reg-form-card-title">
+                                    <i data-lucide="gift"></i>
+                                    <span>Add extras (optional)</span>
+                                </h2>
+                                <p class="reg-form-card-description">Enhance your experience with these optional add-ons.</p>
+                            </div>
+                            <div class="reg-form-card-body">
+                                <div id="extrasContent">
+                                    <!-- Optional Product -->
+                                    <div id="optionalProductCard" class="hidden" style="background: var(--neutral-50); border: 1px solid var(--neutral-200); border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-4);">
+                                        <label style="display: flex; align-items: flex-start; gap: var(--space-3); cursor: pointer;">
+                                            <input type="checkbox" id="optionalProductSelected" name="optionalProductSelected" style="width: 20px; height: 20px; margin-top: 2px; accent-color: var(--brand-primary);" />
+                                            <div style="flex: 1;">
+                                                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                                                    <span id="optionalProductName" style="font-weight: 500; color: var(--neutral-900);">Product Name</span>
+                                                    <span id="optionalProductPrice" style="font-weight: 600; color: var(--brand-primary);">$0.00</span>
+                                                </div>
+                                                <p id="optionalProductHelp" style="font-size: var(--text-sm); color: var(--neutral-500); margin-top: var(--space-1);">Description here</p>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <!-- Facility Fee Info -->
+                                    <div id="facilityFeeInfo" class="hidden" style="background: var(--color-info-light, #dbeafe); border: 1px solid var(--color-info, #3b82f6); border-radius: var(--radius-lg); padding: var(--space-4);">
+                                        <div style="display: flex; align-items: flex-start; gap: var(--space-3);">
+                                            <i data-lucide="info" style="width: 20px; height: 20px; color: var(--color-info); flex-shrink: 0;"></i>
+                                            <div>
+                                                <p style="font-weight: 500; color: var(--color-info-dark, #1e40af);">Facility Fee</p>
+                                                <p style="font-size: var(--text-sm); color: var(--color-info-dark, #1e40af); margin-top: var(--space-1);">A facility fee of <strong id="facilityFeeAmount">$0.00</strong> will be added to your registration.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- No Extras Message -->
+                                    <div id="noExtrasMessage" class="hidden" style="text-align: center; padding: var(--space-8); color: var(--neutral-500);">
+                                        <i data-lucide="package" style="width: 40px; height: 40px; margin: 0 auto var(--space-3); opacity: 0.5;"></i>
+                                        <p>No additional options available for this competition.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 4 Navigation -->
+                        <div class="wizard-nav">
+                            <button type="button" class="wizard-nav-back" id="step4Back">
+                                <i data-lucide="arrow-left"></i>
+                                <span>Back</span>
+                            </button>
+                            <button type="button" class="wizard-nav-next" id="step4Next">
+                                <span>Continue to Review</span>
+                                <i data-lucide="arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Review & Submit -->
+                    <div id="step-review" class="wizard-step-view">
+                        <!-- Participant Summary -->
+                        <div class="review-section">
+                            <div class="review-section-header">
+                                <span class="review-section-title">Participant</span>
+                                <button type="button" class="review-section-edit" data-goto="participant">
+                                    <i data-lucide="pencil"></i>
+                                    <span>Edit</span>
+                                </button>
+                            </div>
+                            <div class="review-section-body">
+                                <div class="review-row">
+                                    <span class="review-row-label">Name</span>
+                                    <span class="review-row-value" id="reviewName">--</span>
+                                </div>
+                                <div class="review-row">
+                                    <span class="review-row-label">Age Division</span>
+                                    <span class="review-row-value" id="reviewAgeDivision">--</span>
+                                </div>
+                                <div class="review-row">
+                                    <span class="review-row-label">Email</span>
+                                    <span class="review-row-value" id="reviewEmail">--</span>
+                                </div>
+                                <div class="review-row">
+                                    <span class="review-row-label">Phone</span>
+                                    <span class="review-row-value" id="reviewPhone">--</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Coach Summary -->
+                        <div class="review-section">
+                            <div class="review-section-header">
+                                <span class="review-section-title">Coach & Team</span>
+                                <button type="button" class="review-section-edit" data-goto="coach">
+                                    <i data-lucide="pencil"></i>
+                                    <span>Edit</span>
+                                </button>
+                            </div>
+                            <div class="review-section-body">
+                                <div class="review-row">
+                                    <span class="review-row-label">Coach</span>
+                                    <span class="review-row-value" id="reviewCoach">--</span>
+                                </div>
+                                <div class="review-row">
+                                    <span class="review-row-label">Team</span>
+                                    <span class="review-row-value" id="reviewTeam">--</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Events Summary -->
+                        <div class="review-section">
+                            <div class="review-section-header">
+                                <span class="review-section-title">Events</span>
+                                <button type="button" class="review-section-edit" data-goto="events">
+                                    <i data-lucide="pencil"></i>
+                                    <span>Edit</span>
+                                </button>
+                            </div>
+                            <div class="review-section-body">
+                                <ul class="review-events-list" id="reviewEventsList">
+                                    <!-- Populated by JS -->
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Cost Summary -->
+                        <div class="review-section">
+                            <div class="review-section-header">
+                                <span class="review-section-title">Order Total</span>
+                            </div>
+                            <div class="review-section-body">
+                                <div class="review-row">
+                                    <span class="review-row-label">Event subtotal</span>
+                                    <span class="review-row-value" id="reviewSubtotal">$0.00</span>
+                                </div>
+                                <div class="review-row hidden" id="reviewAddonRow">
+                                    <span class="review-row-label" id="reviewAddonName">Add-on</span>
+                                    <span class="review-row-value" id="reviewAddonPrice">$0.00</span>
+                                </div>
+                                <div class="review-row" id="reviewFacilityRow">
+                                    <span class="review-row-label">Facility fee</span>
+                                    <span class="review-row-value" id="reviewFacilityFee">$0.00</span>
+                                </div>
+                                <div class="review-row wizard-summary-total">
+                                    <span class="wizard-summary-label">Total</span>
+                                    <span class="wizard-summary-value" id="reviewTotal">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Navigation -->
+                        <div class="wizard-nav" style="flex-direction: column; gap: var(--space-4);">
+                            <div style="display: flex; width: 100%; justify-content: space-between; align-items: center;">
+                                <button type="button" class="wizard-nav-back" id="step5Back">
+                                    <i data-lucide="arrow-left"></i>
+                                    <span>Back</span>
+                                </button>
+                                <button type="button" class="wizard-nav-next" id="submitBtn" style="padding: var(--space-4) var(--space-8);">
+                                    <span>Proceed to Payment</span>
+                                    <i data-lucide="lock"></i>
+                                </button>
+                            </div>
+                            <p style="font-size: var(--text-xs); color: var(--neutral-500); text-align: center;">
+                                By continuing, you'll be redirected to secure checkout.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Summary (Desktop) -->
+                <div class="wizard-sidebar" id="wizardSidebar">
+                    <div class="wizard-summary">
+                        <div class="wizard-summary-header">
+                            <h3 class="wizard-summary-title">Order Summary</h3>
+                        </div>
+                        <div class="wizard-summary-body">
+                            <div class="wizard-summary-row" id="sidebarParticipant">
+                                <span class="wizard-summary-label">Participant</span>
+                                <span class="wizard-summary-value" id="sidebarParticipantName">--</span>
+                            </div>
+                            <div class="wizard-summary-row">
+                                <span class="wizard-summary-label">Events (<span id="sidebarEventsCount">0</span>)</span>
+                                <span class="wizard-summary-value" id="sidebarEventsSubtotal">$0.00</span>
+                            </div>
+                            <div class="wizard-summary-row hidden" id="sidebarAddonRow">
+                                <span class="wizard-summary-label" id="sidebarAddonName">Add-on</span>
+                                <span class="wizard-summary-value" id="sidebarAddonPrice">$0.00</span>
+                            </div>
+                            <div class="wizard-summary-row" id="sidebarFacilityRow">
+                                <span class="wizard-summary-label">Facility fee</span>
+                                <span class="wizard-summary-value" id="sidebarFacilityFee">$0.00</span>
+                            </div>
+                            <div class="wizard-summary-row wizard-summary-total">
+                                <span class="wizard-summary-label">Total</span>
+                                <span class="wizard-summary-value" id="sidebarTotal">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
 
+        <!-- Mobile Sticky Footer -->
+        <div class="wizard-summary-sticky hidden" id="mobileFooter">
+            <div class="wizard-summary-sticky-info">
+                <div class="wizard-summary-sticky-label">Total</div>
+                <div class="wizard-summary-sticky-value" id="mobileTotal">$0.00</div>
+            </div>
+            <button type="button" class="wizard-nav-next" id="mobileNextBtn">
+                <span>Continue</span>
+                <i data-lucide="arrow-right"></i>
+            </button>
         </div>
     </main>
 
     <div id="site-footer"></div>
 
+    <script src="./assets/js/lib/api.js"></script>
+    <script src="./assets/js/branding.js"></script>
     <script src="./assets/js/layout.js"></script>
     <script src="./assets/js/header.js"></script>
-    <script type="module" src="./assets/js/register.js"></script>
+    <script src="./assets/js/lib/FormBuilder.js"></script>
+    <script src="./assets/js/lib/WizardController.js"></script>
+    <script src="./assets/js/register.js"></script>
+    <script>
+        // Initialize Lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    </script>
 </body>
 
 </html>

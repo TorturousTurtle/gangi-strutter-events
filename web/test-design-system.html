@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design System Test Suite</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="/assets/css/design-tokens.css" />
+    <link rel="stylesheet" href="/assets/css/theme.css" />
+    <link rel="stylesheet" href="/assets/css/components.css" />
+
+    <style>
+        body {
+            font-family: var(--font-sans);
+            background: var(--color-background);
+            color: var(--color-text);
+            margin: 0;
+            padding: var(--space-8) var(--space-4);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .test-section {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            margin-bottom: var(--space-6);
+        }
+
+        .test-section h2 {
+            margin-top: 0;
+            font-size: var(--text-2xl);
+            font-weight: var(--font-bold);
+            color: var(--neutral-900);
+            margin-bottom: var(--space-4);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+
+        .test-item {
+            padding: var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--neutral-50);
+        }
+
+        .test-item-label {
+            font-size: var(--text-xs);
+            color: var(--color-text-muted);
+            margin-bottom: var(--space-2);
+            font-weight: var(--font-medium);
+        }
+
+        .color-swatch {
+            width: 100%;
+            height: 60px;
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: var(--font-semibold);
+            font-size: var(--text-sm);
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-1);
+            font-size: var(--text-sm);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-pass { background: var(--color-success); }
+        .status-fail { background: var(--color-error); }
+        .status-warning { background: var(--color-warning); }
+
+        .demo-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+            margin-bottom: var(--space-4);
+        }
+
+        .result-box {
+            background: var(--neutral-100);
+            border: 1px solid var(--neutral-200);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            font-family: var(--font-mono);
+            font-size: var(--text-sm);
+            margin-top: var(--space-4);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        #skeleton-demo {
+            min-height: 300px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+        }
+    </style>
+</head>
+<body>
+    <h1 style="font-size: var(--text-4xl); font-weight: var(--font-bold); margin-bottom: var(--space-2);">
+        Design System Test Suite
+    </h1>
+    <p style="font-size: var(--text-lg); color: var(--color-text-muted); margin-bottom: var(--space-8);">
+        Comprehensive testing of all Phase 6A components and features
+    </p>
+
+    <!-- Test Results Summary -->
+    <div class="test-section">
+        <h2>
+            <i data-lucide="check-circle" style="color: var(--color-success);"></i>
+            Test Results
+        </h2>
+        <div id="test-results">
+            <p class="text-muted">Running tests...</p>
+        </div>
+    </div>
+
+    <!-- Design Tokens Test -->
+    <div class="test-section">
+        <h2>
+            <i data-lucide="palette"></i>
+            Design Tokens
+        </h2>
+
+        <h3 style="font-size: var(--text-lg); margin-top: var(--space-6); margin-bottom: var(--space-3);">Brand Colors</h3>
+        <div class="test-grid">
+            <div class="test-item">
+                <div class="test-item-label">Primary</div>
+                <div class="color-swatch" style="background: var(--brand-primary);">Primary</div>
+                <code style="font-size: var(--text-xs);">--brand-primary</code>
+            </div>
+            <div class="test-item">
+                <div class="test-item-label">Secondary</div>
+                <div class="color-swatch" style="background: var(--brand-secondary); color: var(--neutral-900);">Secondary</div>
+                <code style="font-size: var(--text-xs);">--brand-secondary</code>
+            </div>
+        </div>
+
+        <h3 style="font-size: var(--text-lg); margin-top: var(--space-6); margin-bottom: var(--space-3);">Semantic Colors</h3>
+        <div class="test-grid">
+            <div class="test-item">
+                <div class="test-item-label">Success</div>
+                <div class="color-swatch" style="background: var(--color-success);">Success</div>
+            </div>
+            <div class="test-item">
+                <div class="test-item-label">Warning</div>
+                <div class="color-swatch" style="background: var(--color-warning);">Warning</div>
+            </div>
+            <div class="test-item">
+                <div class="test-item-label">Error</div>
+                <div class="color-swatch" style="background: var(--color-error);">Error</div>
+            </div>
+            <div class="test-item">
+                <div class="test-item-label">Info</div>
+                <div class="color-swatch" style="background: var(--color-info);">Info</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Button Components Test -->
+    <div class="test-section">
+        <h2>
+            <i data-lucide="square"></i>
+            Buttons
+        </h2>
+
+        <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-3);">Variants</h3>
+        <div class="demo-buttons">
+            <button class="btn btn-primary">Primary</button>
+            <button class="btn btn-secondary">Secondary</button>
+            <button class="btn btn-outline">Outline</button>
+            <button class="btn btn-ghost">Ghost</button>
+            <button class="btn btn-danger">Danger</button>
+            <button class="btn btn-primary" disabled>Disabled</button>
+        </div>
+
+        <h3 style="font-size: var(--text-lg); margin-top: var(--space-6); margin-bottom: var(--space-3);">Sizes</h3>
+        <div class="demo-buttons" style="align-items: center;">
+            <button class="btn btn-xs btn-primary">Extra Small</button>
+            <button class="btn btn-sm btn-primary">Small</button>
+            <button class="btn btn-primary">Default</button>
+            <button class="btn btn-lg btn-primary">Large</button>
+            <button class="btn btn-xl btn-primary">Extra Large</button>
+        </div>
+    </div>
+
+    <!-- Badge Components Test -->
+    <div class="test-section">
+        <h2>
+            <i data-lucide="tag"></i>
+            Badges
+        </h2>
+        <div class="demo-buttons">
+            <span class="badge badge-default">Default</span>
+            <span class="badge badge-primary">Primary</span>
+            <span class="badge badge-success">Paid</span>
+            <span class="badge badge-warning">Pending</span>
+            <span class="badge badge-error">Failed</span>
+            <span class="badge badge-info">Info</span>
+        </div>
+        <div class="demo-buttons" style="margin-top: var(--space-3);">
+            <span class="badge badge-sm badge-success">Small</span>
+            <span class="badge badge-success">Default</span>
+            <span class="badge badge-lg badge-success">Large</span>
+        </div>
+        <div class="demo-buttons" style="margin-top: var(--space-3);">
+            <span class="badge badge-dot badge-success"></span>
+            <span class="badge badge-dot badge-warning"></span>
+            <span class="badge badge-dot badge-error"></span>
+        </div>
+    </div>
+
+    <!-- Card Components Test -->
+    <div class="test-section">
+        <h2>
+            <i data-lucide="layout"></i>
+            Cards
+        </h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4);">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Default Card</h3>
+                    <p class="card-description">Basic card with header and body</p>
+                </div>
+                <div class="card-body">
+                    This is the card body with some content.
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-sm btn-primary">Action</button>
+                </div>
+            </div>
+
+            <div class="card card-elevated">
+                <div class="card-header">
+                    <h3 class="card-title">Elevated Card</h3>
+                </div>
+                <div class="card-body">
+                    This card has a shadow for elevation.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Test -->
+    <div class="test-section">
+        <h2>
+            <i data-lucide="bell"></i>
+            Toast Notifications
+        </h2>
+        <div class="demo-buttons">
+            <button class="btn btn-primary" onclick="testToast('success')">Success Toast</button>
+            <button class="btn btn-secondary" onclick="testToast('error')">Error Toast</button>
+            <button class="btn btn-outline" onclick="testToast('warning')">Warning Toast</button>
+            <button class="btn btn-ghost" onclick="testToast('info')">Info Toast</button>
+            <button class="btn btn-primary" onclick="testToast('loading')">Loading Toast</button>
+        </div>
+        <div class="result-box" id="toast-result"></div>
+    </div>
+
+    <!-- Modal Test -->
+    <div class="test-section">
+        <h2>
+            <i data-lucide="square-stack"></i>
+            Modals
+        </h2>
+        <div class="demo-buttons">
+            <button class="btn btn-primary" onclick="testModal('basic')">Basic Modal</button>
+            <button class="btn btn-secondary" onclick="testModal('confirm')">Confirm Dialog</button>
+            <button class="btn btn-outline" onclick="testModal('alert')">Alert Dialog</button>
+            <button class="btn btn-ghost" onclick="testModal('large')">Large Modal</button>
+        </div>
+        <div class="result-box" id="modal-result"></div>
+    </div>
+
+    <!-- Dropdown Test -->
+    <div class="test-section">
+        <h2>
+            <i data-lucide="chevron-down"></i>
+            Dropdowns
+        </h2>
+        <div class="demo-buttons">
+            <div class="dropdown" data-dropdown>
+                <button class="btn btn-primary" data-dropdown-trigger>
+                    Dropdown Menu <i data-lucide="chevron-down" style="width: 16px; height: 16px;"></i>
+                </button>
+                <div class="dropdown-menu" data-dropdown-menu>
+                    <button class="dropdown-item" data-dropdown-item onclick="logAction('Edit clicked')">
+                        <i data-lucide="edit-2" style="width: 16px; height: 16px;"></i>
+                        Edit
+                    </button>
+                    <button class="dropdown-item" data-dropdown-item onclick="logAction('Duplicate clicked')">
+                        <i data-lucide="copy" style="width: 16px; height: 16px;"></i>
+                        Duplicate
+                    </button>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item dropdown-item-danger" data-dropdown-item onclick="logAction('Delete clicked')">
+                        <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="result-box" id="dropdown-result"></div>
+    </div>
+
+    <!-- File Upload Test -->
+    <div class="test-section">
+        <h2>
+            <i data-lucide="upload"></i>
+            File Upload
+        </h2>
+        <div id="file-upload-demo"></div>
+        <div class="result-box" id="upload-result"></div>
+    </div>
+
+    <!-- Skeleton Loader Test -->
+    <div class="test-section">
+        <h2>
+            <i data-lucide="loader"></i>
+            Skeleton Loaders
+        </h2>
+        <div class="demo-buttons">
+            <button class="btn btn-primary" onclick="testSkeleton('table')">Table Skeleton</button>
+            <button class="btn btn-secondary" onclick="testSkeleton('card')">Card Skeleton</button>
+            <button class="btn btn-outline" onclick="testSkeleton('list')">List Skeleton</button>
+            <button class="btn btn-ghost" onclick="testSkeleton('form')">Form Skeleton</button>
+            <button class="btn btn-danger" onclick="clearSkeleton()">Clear</button>
+        </div>
+        <div id="skeleton-demo"></div>
+    </div>
+
+    <!-- Input Components Test -->
+    <div class="test-section">
+        <h2>
+            <i data-lucide="type"></i>
+            Form Inputs
+        </h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4);">
+            <div class="form-group">
+                <label class="form-label form-label-required">Text Input</label>
+                <input type="text" class="input" placeholder="Enter text" />
+                <p class="form-hint">This is a hint text</p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email Input</label>
+                <input type="email" class="input input-error" placeholder="email@example.com" />
+                <p class="form-error">This field is required</p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Select</label>
+                <select class="input select">
+                    <option>Option 1</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Textarea</label>
+                <textarea class="input textarea" rows="3" placeholder="Enter message"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Components Test -->
+    <div class="test-section">
+        <h2>
+            <i data-lucide="alert-circle"></i>
+            Alerts
+        </h2>
+        <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+            <div class="alert alert-info">
+                <svg class="alert-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <div class="alert-content">
+                    <div class="alert-title">Information</div>
+                    <div>This is an informational alert message.</div>
+                </div>
+            </div>
+
+            <div class="alert alert-success">
+                <svg class="alert-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                <div class="alert-content">
+                    <div class="alert-title">Success</div>
+                    <div>Operation completed successfully.</div>
+                </div>
+            </div>
+
+            <div class="alert alert-warning">
+                <svg class="alert-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <div class="alert-content">
+                    <div class="alert-title">Warning</div>
+                    <div>Please review before proceeding.</div>
+                </div>
+            </div>
+
+            <div class="alert alert-error">
+                <svg class="alert-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                <div class="alert-content">
+                    <div class="alert-title">Error</div>
+                    <div>An error occurred. Please try again.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Components -->
+    <script src="/assets/js/components/Toast.js"></script>
+    <script src="/assets/js/components/Modal.js"></script>
+    <script src="/assets/js/components/Dropdown.js"></script>
+    <script src="/assets/js/components/FileUpload.js"></script>
+    <script src="/assets/js/components/SkeletonLoader.js"></script>
+    <script src="/assets/js/branding-loader.js"></script>
+
+    <script>
+        // Initialize icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+        // Test tracking
+        const tests = {
+            designTokens: false,
+            buttons: false,
+            badges: false,
+            cards: false,
+            toast: false,
+            modal: false,
+            dropdown: false,
+            fileUpload: false,
+            skeleton: false,
+            forms: false,
+            alerts: false,
+            branding: false,
+        };
+
+        // Run automated tests
+        function runTests() {
+            const results = [];
+
+            // Test 1: Design tokens loaded
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--brand-primary').trim();
+            tests.designTokens = primaryColor.length > 0;
+            results.push(`Design Tokens: ${tests.designTokens ? 'PASS' : 'FAIL'} (--brand-primary: ${primaryColor})`);
+
+            // Test 2: Toast component loaded
+            tests.toast = typeof Toast !== 'undefined';
+            results.push(`Toast Component: ${tests.toast ? 'PASS' : 'FAIL'}`);
+
+            // Test 3: Modal component loaded
+            tests.modal = typeof Modal !== 'undefined';
+            results.push(`Modal Component: ${tests.modal ? 'PASS' : 'FAIL'}`);
+
+            // Test 4: Dropdown component loaded
+            tests.dropdown = typeof Dropdown !== 'undefined';
+            results.push(`Dropdown Component: ${tests.dropdown ? 'PASS' : 'FAIL'}`);
+
+            // Test 5: FileUpload component loaded
+            tests.fileUpload = typeof FileUpload !== 'undefined';
+            results.push(`FileUpload Component: ${tests.fileUpload ? 'PASS' : 'FAIL'}`);
+
+            // Test 6: SkeletonLoader component loaded
+            tests.skeleton = typeof SkeletonLoader !== 'undefined';
+            results.push(`SkeletonLoader Component: ${tests.skeleton ? 'PASS' : 'FAIL'}`);
+
+            // Test 7: Branding loader
+            tests.branding = typeof window.GKPBranding !== 'undefined';
+            results.push(`Branding Loader: ${tests.branding ? 'PASS' : 'FAIL'}`);
+
+            // Test 8: Button classes exist
+            const testBtn = document.querySelector('.btn');
+            tests.buttons = testBtn !== null;
+            results.push(`Button Components: ${tests.buttons ? 'PASS' : 'FAIL'}`);
+
+            // Test 9: Badge classes exist
+            const testBadge = document.querySelector('.badge');
+            tests.badges = testBadge !== null;
+            results.push(`Badge Components: ${tests.badges ? 'PASS' : 'FAIL'}`);
+
+            // Test 10: Card classes exist
+            const testCard = document.querySelector('.card');
+            tests.cards = testCard !== null;
+            results.push(`Card Components: ${tests.cards ? 'PASS' : 'FAIL'}`);
+
+            // Display results
+            const passCount = Object.values(tests).filter(v => v).length;
+            const totalCount = Object.keys(tests).length;
+            const passRate = Math.round((passCount / totalCount) * 100);
+
+            let html = `
+                <div style="display: flex; gap: var(--space-6); margin-bottom: var(--space-4);">
+                    <div>
+                        <div style="font-size: var(--text-4xl); font-weight: var(--font-bold); color: var(--color-success);">
+                            ${passCount}/${totalCount}
+                        </div>
+                        <div style="font-size: var(--text-sm); color: var(--color-text-muted);">Tests Passed</div>
+                    </div>
+                    <div>
+                        <div style="font-size: var(--text-4xl); font-weight: var(--font-bold); color: ${passRate === 100 ? 'var(--color-success)' : 'var(--color-warning)'};">
+                            ${passRate}%
+                        </div>
+                        <div style="font-size: var(--text-sm); color: var(--color-text-muted);">Pass Rate</div>
+                    </div>
+                </div>
+                <div class="progress" style="margin-bottom: var(--space-4);">
+                    <div class="progress-bar ${passRate === 100 ? 'progress-bar-success' : 'progress-bar-warning'}" style="width: ${passRate}%;"></div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            `;
+
+            results.forEach(result => {
+                const isPassing = result.includes('PASS');
+                html += `
+                    <div class="status-indicator">
+                        <span class="status-dot ${isPassing ? 'status-pass' : 'status-fail'}"></span>
+                        ${result}
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            document.getElementById('test-results').innerHTML = html;
+        }
+
+        // Toast tests
+        function testToast(type) {
+            const messages = {
+                success: 'Registration saved successfully!',
+                error: 'Failed to save registration. Please try again.',
+                warning: 'Registration deadline approaching in 3 days.',
+                info: 'New features are now available.',
+                loading: 'Saving registration...',
+            };
+
+            let toastId;
+            switch (type) {
+                case 'success':
+                    toastId = Toast.success(messages.success);
+                    break;
+                case 'error':
+                    toastId = Toast.error(messages.error);
+                    break;
+                case 'warning':
+                    toastId = Toast.warning(messages.warning);
+                    break;
+                case 'info':
+                    toastId = Toast.info(messages.info);
+                    break;
+                case 'loading':
+                    toastId = Toast.loading(messages.loading);
+                    setTimeout(() => Toast.dismiss(toastId), 3000);
+                    break;
+            }
+
+            logToResult('toast-result', `Toast.${type}() called. ID: ${toastId}`);
+        }
+
+        // Modal tests
+        async function testModal(type) {
+            let result;
+
+            switch (type) {
+                case 'basic':
+                    const modal = new Modal({
+                        title: 'Test Modal',
+                        content: '<p>This is a basic modal dialog with custom content.</p>',
+                        footer: '<button class="btn btn-ghost" data-modal-close>Cancel</button><button class="btn btn-primary" data-modal-close>OK</button>',
+                        size: 'md',
+                        onClose: () => logToResult('modal-result', 'Modal closed'),
+                    });
+                    modal.open();
+                    logToResult('modal-result', 'Basic modal opened');
+                    break;
+
+                case 'confirm':
+                    result = await Modal.confirm({
+                        title: 'Confirm Action',
+                        message: 'Are you sure you want to proceed?',
+                        confirmText: 'Yes, Continue',
+                        variant: 'primary',
+                    });
+                    logToResult('modal-result', `Modal.confirm() result: ${result}`);
+                    break;
+
+                case 'alert':
+                    await Modal.alert({
+                        title: 'Alert',
+                        message: 'This is an alert dialog.',
+                        buttonText: 'Got it',
+                    });
+                    logToResult('modal-result', 'Modal.alert() dismissed');
+                    break;
+
+                case 'large':
+                    const largeModal = new Modal({
+                        title: 'Large Modal',
+                        content: '<p>This is a large modal with more content space.</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>',
+                        size: 'lg',
+                    });
+                    largeModal.open();
+                    logToResult('modal-result', 'Large modal opened');
+                    break;
+            }
+        }
+
+        // Dropdown test
+        function logAction(action) {
+            logToResult('dropdown-result', action);
+        }
+
+        // File upload test
+        const uploader = new FileUpload({
+            container: document.getElementById('file-upload-demo'),
+            endpoint: '/api/upload/image.php',
+            onSuccess: (response) => {
+                logToResult('upload-result', `Upload successful: ${response.url}`);
+                Toast.success('File uploaded successfully!');
+            },
+            onError: (error) => {
+                logToResult('upload-result', `Upload failed: ${error}`);
+                Toast.error('Upload failed: ' + error);
+            },
+            onProgress: (percent) => {
+                logToResult('upload-result', `Upload progress: ${percent}%`);
+            },
+        });
+
+        // Skeleton tests
+        function testSkeleton(type) {
+            const container = document.getElementById('skeleton-demo');
+
+            switch (type) {
+                case 'table':
+                    SkeletonLoader.table(container, { rows: 5, columns: 6 });
+                    break;
+                case 'card':
+                    SkeletonLoader.card(container, { count: 3, showImage: true });
+                    break;
+                case 'list':
+                    SkeletonLoader.list(container, { rows: 5, showAvatar: true });
+                    break;
+                case 'form':
+                    SkeletonLoader.form(container, { fields: 4 });
+                    break;
+            }
+        }
+
+        function clearSkeleton() {
+            const container = document.getElementById('skeleton-demo');
+            SkeletonLoader.hide(container);
+            container.innerHTML = '<p style="color: var(--color-text-muted); text-align: center; padding: var(--space-8);">Skeleton cleared. Click a button above to show a skeleton.</p>';
+        }
+
+        // Helper function to log results
+        function logToResult(elementId, message) {
+            const el = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const existing = el.innerHTML;
+            el.innerHTML = `[${timestamp}] ${message}\n${existing}`;
+        }
+
+        // Run tests on page load
+        window.addEventListener('load', () => {
+            runTests();
+
+            // Initialize dropdown after page load
+            setTimeout(() => {
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>

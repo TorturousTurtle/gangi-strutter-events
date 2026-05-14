@@ -64,6 +64,55 @@ try {
   $hasTeam = false;
 }
 
+// Detect custom_data_json column
+$hasCustomData = false;
+try {
+  $chk = $pdo->query("SHOW COLUMNS FROM registrations LIKE 'custom_data_json'");
+  $hasCustomData = (bool)$chk->fetch();
+} catch (Throwable $e) {
+  $hasCustomData = false;
+}
+
+// Load field configuration to get custom field definitions
+$customFieldDefs = [];
+$fieldsConfigPath = dirname(__DIR__, 2) . '/config/fields.json';
+if (file_exists($fieldsConfigPath)) {
+  $fieldsJson = file_get_contents($fieldsConfigPath);
+  $fieldsConfig = json_decode($fieldsJson, true);
+  if (is_array($fieldsConfig) && isset($fieldsConfig['fields'])) {
+    foreach ($fieldsConfig['fields'] as $field) {
+      if (isset($field['storage']) && $field['storage'] === 'custom' && !empty($field['id'])) {
+        $customFieldDefs[$field['id']] = [
+          'id' => $field['id'],
+          'label' => $field['label'] ?? $field['id'],
+        ];
+      }
+    }
+  }
+}
+
+// Load competition-specific field config for additional custom fields
+if ($competitionId > 0) {
+  $stmt = $pdo->prepare("SELECT fields_config_json FROM competitions WHERE id = ?");
+  $stmt->execute([$competitionId]);
+  $compRow = $stmt->fetch();
+  if ($compRow && !empty($compRow['fields_config_json'])) {
+    $compFieldsConfig = json_decode($compRow['fields_config_json'], true);
+    // Check for custom fields added via admin UI
+    if (is_array($compFieldsConfig)) {
+      $customFieldsArray = $compFieldsConfig['customFields'] ?? $compFieldsConfig['fields'] ?? [];
+      foreach ($customFieldsArray as $field) {
+        if (isset($field['storage']) && $field['storage'] === 'custom' && !empty($field['id']) && !empty($field['label'])) {
+          $customFieldDefs[$field['id']] = [
+            'id' => $field['id'],
+            'label' => $field['label'],
+          ];
+        }
+      }
+    }
+  }
+}
+
 $selectCols = [
   'id',
   'competition_id',
@@ -82,6 +131,7 @@ $selectCols = array_merge($selectCols, [
   'event_total',
   'created_at',
 ]);
+if ($hasCustomData) $selectCols[] = 'custom_data_json';
 
 $stmt = $pdo->prepare(
   "SELECT " . implode(', ', $selectCols) . " FROM registrations WHERE competition_id = ? ORDER BY created_at DESC, id DESC"
@@ -141,6 +191,11 @@ $header = ['id','competition_id','first_name','last_name','coach_name'];
 $header[] = 'team_name';
 $header = array_merge($header, ['age_division','email','home_phone','events','event_subtotal','facility_fee','event_total','created_at']);
 
+// Add custom field headers
+foreach ($customFieldDefs as $fieldDef) {
+  $header[] = $fieldDef['label'];
+}
+
 fputcsv($out, $header, ',', '"', '\\');
 
 foreach ($rows as $r) {
@@ -173,6 +228,23 @@ foreach ($rows as $r) {
     (string)$r['event_total'],
     (string)$r['created_at'],
   ];
+
+  // Add custom field values
+  $customData = [];
+  if ($hasCustomData && !empty($r['custom_data_json'])) {
+    $decoded = json_decode($r['custom_data_json'], true);
+    if (is_array($decoded)) {
+      $customData = $decoded;
+    }
+  }
+  foreach ($customFieldDefs as $fieldId => $fieldDef) {
+    $value = $customData[$fieldId] ?? '';
+    // Handle arrays (e.g., multi-select) by joining with commas
+    if (is_array($value)) {
+      $value = implode(', ', $value);
+    }
+    $line[] = (string)$value;
+  }
 
   fputcsv($out, $line, ',', '"', '\\');
 }

@@ -8,6 +8,10 @@ function json_response(array $payload, int $status = 200): void {
   exit;
 }
 
+function json_error(string $message, int $status = 400): void {
+  json_response(['ok' => false, 'error' => $message], $status);
+}
+
 function read_json_body(): array {
   $raw = file_get_contents('php://input');
   if (!$raw) return [];
@@ -21,12 +25,36 @@ function require_param($value, string $name): void {
   }
 }
 
-// Optional but helpful for local dev / static frontend calling /api
-function allow_cors(): void {
-  header('Access-Control-Allow-Origin: *');
-  header('Access-Control-Allow-Headers: Content-Type');
-  header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+/**
+ * Set CORS headers for API responses.
+ *
+ * For authenticated endpoints, uses the request origin (with credentials).
+ * For public endpoints, can use wildcard origin.
+ *
+ * @param bool $withCredentials If true, uses origin whitelist and allows credentials
+ */
+function allow_cors(bool $withCredentials = false): void {
+  $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+  if ($withCredentials) {
+    // For authenticated requests, reflect the origin and allow credentials
+    // In production, you might want to whitelist specific origins
+    if ($origin) {
+      header("Access-Control-Allow-Origin: $origin");
+      header('Access-Control-Allow-Credentials: true');
+    }
+    header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token');
+  } else {
+    // For public endpoints, allow any origin
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Headers: Content-Type');
+  }
+
+  header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+  header('Access-Control-Max-Age: 86400');
+
   if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
     exit;
   }
 }

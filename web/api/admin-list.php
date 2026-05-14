@@ -1,15 +1,28 @@
 <?php
 // web/api/admin-list.php
 // Admin: list registrants for a competition (defaults to current competition)
+// Supports pagination via ?page=1&per_page=50 parameters
 
 require_once __DIR__ . '/util.php';
 require_once __DIR__ . '/admin_auth.php';
+require_once __DIR__ . '/../../server/lib/SchemaCache.php';
+
 require_admin_auth();
 
 allow_cors();
 require_method('GET');
 
 $pdo = require __DIR__ . '/db.php';
+
+// Set PDO for SchemaCache
+SchemaCache::setPdo($pdo);
+
+// Pagination parameters
+$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 50;
+// Clamp per_page between 1 and 100
+$perPage = max(1, min(100, $perPage));
+$offset = ($page - 1) * $perPage;
 
 // Optional explicit competition_id
 $competitionId = isset($_GET['competition_id']) ? (int)$_GET['competition_id'] : 0;
@@ -26,39 +39,40 @@ if ($competitionId <= 0) {
     'ok' => true,
     'competitionId' => 0,
     'registrations' => [],
+    'pagination' => [
+      'total' => 0,
+      'page' => $page,
+      'perPage' => $perPage,
+      'totalPages' => 0,
+      'hasMore' => false,
+    ],
   ]);
 }
 
-// Detect optional columns (keeps endpoint resilient during migrations)
-$hasTeam = false;
-try {
-  $chk = $pdo->query("SHOW COLUMNS FROM registrations LIKE 'team_name'");
-  $hasTeam = (bool)$chk->fetch();
-} catch (Throwable $e) {
-  $hasTeam = false;
-}
+// Warm the schema cache for registrations table (single query instead of 12+)
+SchemaCache::warmCache('registrations');
 
-// Detect optional columns (resilient during migrations)
+// Detect optional columns using cached schema (no DB queries here)
 $optionalCols = [
+  'team_name',
   'date_of_birth',
   'gender',
   'email',
   'home_phone',
   'solo_status',
   'is_duet_or_trio',
+  'coach_selections_json',
+  'optional_product_selected',
+  'optional_product_name',
+  'optional_product_price',
+  'payment_status',
+  'payment_provider',
+  'payment_transaction_id',
 ];
-$hasCol = [];
-foreach ($optionalCols as $c) {
-  $hasCol[$c] = false;
-  try {
-    $chk = $pdo->query("SHOW COLUMNS FROM registrations LIKE '" . $c . "'");
-    $hasCol[$c] = (bool)$chk->fetch();
-  } catch (Throwable $e) {
-    $hasCol[$c] = false;
-  }
-}
 
-// Pull registrations
+$hasCol = SchemaCache::hasColumns('registrations', $optionalCols);
+
+// Build select columns list - always include these core columns
 $selectCols = [
   'id',
   'competition_id',
@@ -68,14 +82,13 @@ $selectCols = [
 ];
 
 // Add optional columns if present
-foreach (['date_of_birth','gender','email','home_phone','solo_status','is_duet_or_trio'] as $c) {
-  if (!empty($hasCol[$c])) $selectCols[] = $c;
+foreach ($optionalCols as $c) {
+  if (!empty($hasCol[$c])) {
+    $selectCols[] = $c;
+  }
 }
 
-if ($hasTeam) {
-  $selectCols[] = 'team_name';
-}
-
+// Always add these columns (they're part of the original schema)
 $selectCols = array_merge($selectCols, [
   'age_division',
   'event_selections_json',
@@ -85,12 +98,21 @@ $selectCols = array_merge($selectCols, [
   'created_at',
 ]);
 
+// Get total count for pagination
+$countStmt = $pdo->prepare("SELECT COUNT(*) FROM registrations WHERE competition_id = ?");
+$countStmt->execute([$competitionId]);
+$total = (int)$countStmt->fetchColumn();
+$totalPages = (int)ceil($total / $perPage);
+
+// Pull registrations with pagination
+// Note: LIMIT and OFFSET must be bound as integers, not strings
 $stmt = $pdo->prepare("
   SELECT
     " . implode(",\n    ", $selectCols) . "
   FROM registrations
   WHERE competition_id = ?
   ORDER BY created_at DESC, id DESC
+  LIMIT " . (int)$perPage . " OFFSET " . (int)$offset . "
 ");
 $stmt->execute([$competitionId]);
 $rows = $stmt->fetchAll();
@@ -125,12 +147,42 @@ foreach ($rows as $r) {
     }
   }
 
+  $coachSelRaw = $r['coach_selections_json'] ?? '';
+  $coachSels = [];
+
+  if (is_string($coachSelRaw) && trim($coachSelRaw) !== '') {
+    $tmpc = json_decode($coachSelRaw, true);
+    if (is_array($tmpc)) {
+      foreach ($tmpc as $item) {
+        if (!is_array($item)) continue;
+
+        $cid = array_key_exists('id', $item) ? $item['id'] : null;
+        // Normalize to int when numeric, otherwise null
+        $cidNorm = null;
+        if ($cid !== null && $cid !== '') {
+          $cidNorm = is_numeric($cid) ? (int)$cid : null;
+        }
+
+        $cname = isset($item['name']) ? (string)$item['name'] : '';
+        $ccode = isset($item['internal_code']) ? (string)$item['internal_code'] : '';
+
+        $coachSels[] = [
+          'id' => $cidNorm,
+          'name' => $cname,
+          'internal_code' => $ccode,
+        ];
+      }
+    }
+  }
+
   $decoded[] = [
     'id' => (int)$r['id'],
     'competitionId' => (int)$r['competition_id'],
     'firstName' => (string)$r['first_name'],
     'lastName' => (string)$r['last_name'],
     'coachName' => $r['coach_name'] !== null ? (string)$r['coach_name'] : '',
+    'coachSelections' => $coachSels,
+    'coachSelectionsJson' => isset($r['coach_selections_json']) && $r['coach_selections_json'] !== null ? (string)$r['coach_selections_json'] : '[]',
     'teamName' => isset($r['team_name']) && $r['team_name'] !== null ? (string)$r['team_name'] : '',
     'dateOfBirth' => isset($r['date_of_birth']) && $r['date_of_birth'] !== null ? (string)$r['date_of_birth'] : '',
     'gender' => isset($r['gender']) && $r['gender'] !== null ? (string)$r['gender'] : '',
@@ -140,14 +192,22 @@ foreach ($rows as $r) {
     'isDuetOrTrio' => isset($r['is_duet_or_trio']) ? (int)$r['is_duet_or_trio'] : 0,
     'ageDivision' => $r['age_division'] !== null ? (string)$r['age_division'] : '',
     'eventSelections' => $sels,
+    // Raw JSON string for admin editing UI
+    'eventSelectionsJson' => isset($r['event_selections_json']) && $r['event_selections_json'] !== null ? (string)$r['event_selections_json'] : '[]',
     'eventSubtotal' => (float)$r['event_subtotal'],
     'facilityFee' => (float)$r['facility_fee'],
+    'optionalProductSelected' => isset($r['optional_product_selected']) ? (int)$r['optional_product_selected'] : 0,
+    'optionalProductName' => isset($r['optional_product_name']) && $r['optional_product_name'] !== null ? (string)$r['optional_product_name'] : '',
+    'optionalProductPrice' => isset($r['optional_product_price']) ? (float)$r['optional_product_price'] : 0.0,
     'eventTotal' => (float)$r['event_total'],
+    'paymentStatus' => isset($r['payment_status']) && $r['payment_status'] !== null ? (string)$r['payment_status'] : 'pending',
+    'paymentProvider' => isset($r['payment_provider']) && $r['payment_provider'] !== null ? (string)$r['payment_provider'] : null,
+    'paymentTransactionId' => isset($r['payment_transaction_id']) ? (int)$r['payment_transaction_id'] : null,
     'createdAt' => (string)$r['created_at'],
   ];
 }
 
-// If selections don’t include names, map ids -> names from event_options
+// If selections don't include names, map ids -> names from event_options
 $optionNameById = [];
 $ids = array_keys($allOptionIds);
 if (count($ids) > 0) {
@@ -178,4 +238,11 @@ json_response([
   'ok' => true,
   'competitionId' => $competitionId,
   'registrations' => $decoded,
+  'pagination' => [
+    'total' => $total,
+    'page' => $page,
+    'perPage' => $perPage,
+    'totalPages' => $totalPages,
+    'hasMore' => $page < $totalPages,
+  ],
 ]);

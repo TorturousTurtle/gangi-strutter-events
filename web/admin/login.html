@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Login</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/design-tokens.css" />
+    <link rel="stylesheet" href="../assets/css/theme.css" />
+    <link rel="stylesheet" href="../assets/css/components.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans, 'Inter', sans-serif);
+            background: linear-gradient(135deg, var(--neutral-100) 0%, var(--neutral-200) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-4);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+        }
+
+        .login-header {
+            padding: var(--space-8) var(--space-8) var(--space-6);
+            text-align: center;
+        }
+
+        .login-logo {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto var(--space-4);
+            border-radius: var(--radius-xl);
+            background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-logo svg {
+            width: 32px;
+            height: 32px;
+            color: white;
+        }
+
+        .login-title {
+            font-size: var(--text-xl);
+            font-weight: var(--font-bold, 700);
+            color: var(--neutral-900);
+            margin-bottom: var(--space-1);
+        }
+
+        .login-subtitle {
+            font-size: var(--text-sm);
+            color: var(--neutral-500);
+        }
+
+        .login-form {
+            padding: 0 var(--space-8) var(--space-8);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-4);
+        }
+
+        .form-label {
+            display: block;
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium, 500);
+            color: var(--neutral-700);
+            margin-bottom: var(--space-2);
+        }
+
+        .form-input {
+            display: block;
+            width: 100%;
+            font-family: inherit;
+            font-size: var(--text-sm);
+            line-height: 1.5;
+            color: var(--neutral-900);
+            background-color: white;
+            border: 1px solid var(--neutral-300);
+            border-radius: var(--radius-lg);
+            padding: var(--space-3) var(--space-4);
+            transition: all 150ms ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 3px var(--brand-primary-light);
+        }
+
+        .form-input::placeholder {
+            color: var(--neutral-400);
+        }
+
+        .form-input-error {
+            border-color: var(--color-error);
+        }
+
+        .form-input-error:focus {
+            border-color: var(--color-error);
+            box-shadow: 0 0 0 3px var(--color-error-light);
+        }
+
+        .login-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            font-family: inherit;
+            font-size: var(--text-sm);
+            font-weight: var(--font-semibold, 600);
+            color: white;
+            background-color: var(--brand-primary);
+            border: none;
+            border-radius: var(--radius-lg);
+            padding: var(--space-3) var(--space-4);
+            cursor: pointer;
+            transition: all 150ms ease;
+            margin-top: var(--space-6);
+        }
+
+        .login-btn:hover:not(:disabled) {
+            background-color: var(--brand-primary-hover);
+        }
+
+        .login-btn:focus-visible {
+            outline: 2px solid var(--brand-primary);
+            outline-offset: 2px;
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .login-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .error-message {
+            background-color: var(--color-error-light);
+            border: 1px solid var(--color-error);
+            color: var(--color-error);
+            font-size: var(--text-sm);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-4);
+            display: none;
+        }
+
+        .error-message.visible {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .error-message svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: var(--space-4);
+            font-size: var(--text-sm);
+            color: var(--neutral-500);
+        }
+
+        .back-link a {
+            color: var(--brand-primary);
+            text-decoration: none;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i data-lucide="shield-check"></i>
+                </div>
+                <h1 class="login-title">Admin Login</h1>
+                <p class="login-subtitle">Sign in to manage your events</p>
+            </div>
+
+            <form id="login-form" class="login-form">
+                <div id="error-container" class="error-message">
+                    <i data-lucide="alert-circle"></i>
+                    <span id="error-text"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        class="form-input"
+                        placeholder="Enter your username"
+                        autocomplete="username"
+                        required
+                        autofocus
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-input"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    />
+                </div>
+
+                <button type="submit" id="login-btn" class="login-btn">
+                    <span id="btn-text">Sign In</span>
+                </button>
+            </form>
+        </div>
+
+        <p class="back-link">
+            <a href="/">&larr; Back to home</a>
+        </p>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        const form = document.getElementById('login-form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('login-btn');
+        const btnText = document.getElementById('btn-text');
+        const errorContainer = document.getElementById('error-container');
+        const errorText = document.getElementById('error-text');
+
+        function showError(message) {
+            errorText.textContent = message;
+            errorContainer.classList.add('visible');
+            usernameInput.classList.add('form-input-error');
+            passwordInput.classList.add('form-input-error');
+        }
+
+        function hideError() {
+            errorContainer.classList.remove('visible');
+            usernameInput.classList.remove('form-input-error');
+            passwordInput.classList.remove('form-input-error');
+        }
+
+        function setLoading(loading) {
+            loginBtn.disabled = loading;
+            if (loading) {
+                btnText.innerHTML = '<span class="spinner"></span> Signing in...';
+            } else {
+                btnText.textContent = 'Sign In';
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError();
+
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!username || !password) {
+                showError('Please enter both username and password.');
+                return;
+            }
+
+            setLoading(true);
+
+            try {
+                const response = await fetch('/api/auth/login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ username, password }),
+                });
+
+                const data = await response.json();
+
+                if (data.ok) {
+                    // Store CSRF token for future requests
+                    if (data.csrf_token) {
+                        sessionStorage.setItem('csrf_token', data.csrf_token);
+                    }
+                    // Redirect to admin dashboard
+                    window.location.href = '/admin/';
+                } else {
+                    showError(data.error || 'Login failed. Please try again.');
+                }
+            } catch (err) {
+                console.error('Login error:', err);
+                showError('Connection error. Please try again.');
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        // Clear error when user starts typing
+        [usernameInput, passwordInput].forEach(input => {
+            input.addEventListener('input', hideError);
+        });
+
+        // Check if already authenticated
+        (async () => {
+            try {
+                const response = await fetch('/api/auth/check.php', {
+                    credentials: 'include',
+                });
+                const data = await response.json();
+                if (data.ok && data.authenticated) {
+                    window.location.href = '/admin/';
+                }
+            } catch (err) {
+                // Ignore errors, just show login form
+            }
+        })();
+    </script>
+</body>
+
+</html>
